@@ -42,6 +42,7 @@ export class AppComponent implements OnInit {
   }
 
   openIframe() {
+    // tslint:disable-next-line:max-line-length
     this.store.dispatch(new OpenIframe('https://m.bukalapak.com/p/fashion-pria/dompet-302/22499a7-jual-bogesi-dompet-kulit-pria-bogesi836-omhapgbk'));
   }
 

@@ -1,5 +1,5 @@
 <mat-form-field class="container" [floatLabel]="'never'">
-    <mat-icon matPrefix (click)="search()">search</mat-icon>
+    <mat-icon #icon matPrefix (click)="search()">search</mat-icon>
     <span matPrefix>Cari</span>
     <input #input
       [(ngModel)]="searchValue"

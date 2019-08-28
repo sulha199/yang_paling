@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SortBy, GlobalSearchValueModel } from 'src/app/model/globalSearch.model';
 import { MatSelect } from '@angular/material';
@@ -12,6 +12,9 @@ import { SearchStart } from 'src/app/ngxs/actions/globalSearch.actions';
   encapsulation: ViewEncapsulation.None,
 })
 export class GlobalSearchComponent implements OnInit {
+  @ViewChild('icon', {static: true, read: ElementRef}) iconRef: ElementRef<HTMLElement>;
+  @ViewChild('input', {static: true, read: ElementRef}) inputRef: ElementRef<HTMLElement>;
+
   searchValue = '';
   sortOptions: Array<{key: SortBy, label: string}> = [
     { key: SortBy.price_asc, label: 'murah'},

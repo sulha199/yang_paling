@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HeaderNavbarComponent } from './header-navbar.component';
+import { GlobalSearchComponent } from '../../inputs/global-search/global-search.component';
+import { MaterialModule } from 'src/app/modules/material.module';
 
 describe('HeaderNavbarComponent', () => {
   let component: HeaderNavbarComponent;
@@ -8,7 +10,13 @@ describe('HeaderNavbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HeaderNavbarComponent ]
+      declarations: [
+        HeaderNavbarComponent,
+        GlobalSearchComponent,
+      ],
+      imports: [
+        MaterialModule,
+      ]
     })
     .compileComponents();
   }));
