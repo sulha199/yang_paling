@@ -1,0 +1,10 @@
+<mat-form-field class="container">
+  <input #input
+    type="text"
+    matInput
+    [value]="_value"
+    [placeholder]="(this.value !== '') ? '' : placeholder"
+    (keyup)="onKeyUp()"
+    (keydown.enter)="onKeyEnter()"/>
+  <mat-icon matSuffix *ngIf="!!icon" (click)="onIconClick()">{{ icon }}</mat-icon>
+</mat-form-field>
