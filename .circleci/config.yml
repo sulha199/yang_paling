@@ -19,4 +19,4 @@ jobs:
           paths:
             - ./node_modules
       - run: npm test
-      - run: ng deploy --repo=https://github.com/sulha199/yang_paling.git --name="sulha199" --email=sulha199@gmail.com --dir=dist
+      - run: npm run deploy
