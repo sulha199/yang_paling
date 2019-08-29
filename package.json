@@ -8,7 +8,7 @@
     "test": "ng test --code-coverage --watch=false",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "ng deploy && ngh --repo=https://github.com/sulha199/yang_paling.git --name=sulha199 --email=sulha199@gmail.com"
+    "deploy": "ngh"
   },
   "private": true,
   "dependencies": {
