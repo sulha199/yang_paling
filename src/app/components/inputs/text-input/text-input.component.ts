@@ -10,7 +10,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class TextInputComponent implements OnInit {
   @Input() placeholder: string;
   @Input() icon: string;
-  private _value = '';
+  _value = '';
   @Input() set value(val) { this._value = val; }
   get value(): string { return this.inputRef.nativeElement.value; }
 

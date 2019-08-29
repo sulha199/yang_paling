@@ -15,7 +15,8 @@ import { IFramePageState } from './ngxs/states/iframePage.state';
   selector: 'app-header-navbar',
   template: '',
 })
-class MockAppHeader{}
+class MockAppHeaderComponent {}
+
 
 fdescribe('AppComponent', () => {
   let store: Store;
@@ -30,7 +31,7 @@ fdescribe('AppComponent', () => {
       ],
       declarations: [
         AppComponent,
-        MockAppHeader,
+        MockAppHeaderComponent,
         LetDirective,
         GlobalSearchComponent,
       ],
