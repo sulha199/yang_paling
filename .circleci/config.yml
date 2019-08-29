@@ -15,7 +15,7 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
       - add_ssh_keys:
           fingerprints:
-            - "80:5b:4f:f9:fb:93:38:86:59:33:ab:5d:15:33:75:80"
+            - "a5:a6:8b:1e:ff:a6:d5:f7:03:fa:75:a3:14:68:f4:d3"
       - run: npm install
       - save_cache: # special step to save the dependency cache
           key: dependency-cache-{{ checksum "package.json" }}
