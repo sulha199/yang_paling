@@ -11,9 +11,15 @@ jobs:
     steps:
       # Checkout the code from the branch into the working_directory-
       - checkout
+      - restore_cache: # special step to restore the dependency cache
+          key: dependency-cache-{{ checksum "package.json" }}
       - add_ssh_keys:
           fingerprints:
             - "a5:a6:8b:1e:ff:a6:d5:f7:03:fa:75:a3:14:68:f4:d3"
-      - run: npm install     
+      - run: npm install
+      - save_cache: # special step to save the dependency cache
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules     
       - run: npm test
       - run: sudo npm run deploy && yes
