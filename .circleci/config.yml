@@ -3,6 +3,8 @@ jobs:
   build:
     docker:
       - image: circleci/node:10.16.3
+        environment:
+          CHROME_BIN: "/usr/bin/google-chrome"
 
     working_directory: ~/repo
 
