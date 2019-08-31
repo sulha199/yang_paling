@@ -24,4 +24,5 @@ jobs:
       - run: npm test
       - run: ssh -o StrictHostKeyChecking=no sulha199@github.com
       - run: npm run build
-      - run: sudo npm run deploy && yes
+      - run: ng build --prod --base-href=https://sulha199.github.io/yang_paling
+      - run: npx ngh --repo=https://github.com/sulha199/yang_paling.git --dir=dist --name=sulha199
