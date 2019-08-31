@@ -46,7 +46,7 @@ jobs:
           name: Clone gh-pages branch
           working_directory: ~/repo/deploy
           command: |
-            git clone --depth 1 -b gh-pages https://${DOCS_GITHUB_TOKEN}@github.com/sulha199/yang_paling.git .
+            git clone --depth 1 -b gh-pages git@github.com:sulha199/yang_paling.git .
       - run: ls
       - run:
           name: delete folder with current branch name if exist
