@@ -28,7 +28,7 @@ jobs:
           paths:
             - ./dist
   deploy:
-    executor: node_env_executor
+    executor: my-executor
     steps:
       # - restore_cache: # special step to restore the deploy cache
       #     key: dependency-cache-${CIRCLE_BRANCH}-${CIRCLE_SHA1}
