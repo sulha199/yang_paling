@@ -39,6 +39,9 @@ jobs:
     steps:
       - restore_cache: # special step to restore the deploy cache
           key: dependency-cache-${CIRCLE_BRANCH}-${CIRCLE_SHA1}
+      - add_ssh_keys:
+          fingerprints:
+            - "a5:a6:8b:1e:ff:a6:d5:f7:03:fa:75:a3:14:68:f4:d3"
       - run:
           name: Clone gh-pages branch
           working_directory: ~/repo/deploy
@@ -63,4 +66,4 @@ jobs:
             git config user.name "Deployment Bot"
             git commit --allow-empty -m "commited by CI"
             # Push quietly to prevent showing the token in log
-            git push -q https://${DOCS_GITHUB_TOKEN}@github.com/sulha199/yang_paling.git gh-pages
+            git push -q
