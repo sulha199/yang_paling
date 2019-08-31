@@ -35,6 +35,7 @@ jobs:
           working_directory: ~/repo/deploy
           command: |
             git clone --depth 1 -b gh-pages https://${DOCS_GITHUB_TOKEN}@github.com/sulha199/yang_paling.git
+      - run: ls
       - run:
           name: delete folder with current branch name if exist
           command: rm -rf ~/repo/deploy/${CIRCLE_BRANCH}
