@@ -1,29 +1,56 @@
 version: 2
-jobs:
-  build:
+executors:
+  node_env_executor:
     docker:
       - image: circleci/node:10.16.3-stretch-browsers
         environment:
           CHROME_BIN: "/usr/bin/google-chrome"
 
     working_directory: ~/repo
-
+jobs:
+  build:
+    executor: node_env_executor
     steps:
       # Checkout the code from the branch into the working_directory-
-      - checkout
+      - checkout:
+        path: ~/repo/build
       - restore_cache: # special step to restore the dependency cache
-          key: dependency-cache-{{ checksum "package.json" }}     
-      - run: npm install 
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm install
       - save_cache: # special step to save the dependency cache
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
       - run: npm test
-      - run: npm run build
       - run: npm run build --prod --base-href=https://sulha199.github.io/yang_paling
-      - run: npm run npx
-      - save_cache: # special step to save the dist cache
+      - save_cache: # special step to save the deploy cache
           key: dependency-cache-${CIRCLE_BRANCH}-${CIRCLE_SHA1}
           paths:
-            - ~/repo/dist
-      
+            - ./dist
+  deploy:
+    executor: node_env_executor
+    steps:
+      # - restore_cache: # special step to restore the deploy cache
+      #     key: dependency-cache-${CIRCLE_BRANCH}-${CIRCLE_SHA1}
+      - run:
+          name: Clone gh-pages branch
+          working_directory: ~/repo/deploy
+          command: |
+            git clone --depth 1 -b gh-pages https://${DOCS_GITHUB_TOKEN}@github.com/sulha199/yang_paling.git
+      - run:
+        name: delete folder with current branch name if exist
+        command: rm -rf ~/repo/deploy/${CIRCLE_BRANCH}
+      - run: mkdir ~/repo/deploy/${CIRCLE_BRANCH}
+      - run:
+        name: move build result to deploy folder with branch-name
+        command: mv ~repo/dist/* ~/repo/deploy/${CIRCLE_BRANCH} -i
+      - deploy:
+          name: Trigger commit and push
+          working_directory: ~/repo/deploy
+          command: |
+            git config credential.helper 'cache --timeout=120'
+            git config user.email "<email>"
+            git config user.name "Deployment Bot"
+            git commit --allow-empty -m "commited on ${(date+%T)} by CI"
+            # Push quietly to prevent showing the token in log
+            git push -q https://${DOCS_GITHUB_TOKEN}@github.com/sulha199/yang_paling.git gh-pages
