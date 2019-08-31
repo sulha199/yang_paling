@@ -13,13 +13,13 @@ jobs:
       - checkout
       - restore_cache: # special step to restore the dependency cache
           key: dependency-cache-{{ checksum "package.json" }}     
-      - run: npm install
-      - save_cache: # special step to save the dependency cache
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - ./node_modules     
+      - run: npm install 
       - run: npm test
-      - run: ssh -o StrictHostKeyChecking=no sulha199@github.com
       - run: npm run build
       - run: ng build --prod --base-href=https://sulha199.github.io/yang_paling
       - run: npx ngh --repo=https://github.com/sulha199/yang_paling.git --dir=dist --name=sulha199
+      - save_cache: # special step to save the dependency cache
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules    
+            - ./dist
