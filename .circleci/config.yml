@@ -1,6 +1,6 @@
 version: 2
 executors:
-  node_env_executor:
+  my-executor:
     docker:
       - image: circleci/node:10.16.3-stretch-browsers
         environment:
@@ -9,11 +9,11 @@ executors:
     working_directory: ~/repo
 jobs:
   build:
-    executor: node_env_executor
+    executor: my-executor
     steps:
       # Checkout the code from the branch into the working_directory-
       - checkout:
-        path: ~/repo/build
+          path: ~/repo/build
       - restore_cache: # special step to restore the dependency cache
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm install
@@ -38,12 +38,12 @@ jobs:
           command: |
             git clone --depth 1 -b gh-pages https://${DOCS_GITHUB_TOKEN}@github.com/sulha199/yang_paling.git
       - run:
-        name: delete folder with current branch name if exist
-        command: rm -rf ~/repo/deploy/${CIRCLE_BRANCH}
+          name: delete folder with current branch name if exist
+          command: rm -rf ~/repo/deploy/${CIRCLE_BRANCH}
       - run: mkdir ~/repo/deploy/${CIRCLE_BRANCH}
       - run:
-        name: move build result to deploy folder with branch-name
-        command: mv ~repo/dist/* ~/repo/deploy/${CIRCLE_BRANCH} -i
+          name: move build result to deploy folder with branch-name
+          command: mv ~repo/dist/* ~/repo/deploy/${CIRCLE_BRANCH} -i
       - deploy:
           name: Trigger commit and push
           working_directory: ~/repo/deploy
