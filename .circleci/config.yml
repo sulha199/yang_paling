@@ -52,6 +52,8 @@ jobs:
       - run:
           name: move build result to deploy folder with branch-name
           command: mv ./dist/* ~/repo/deploy/${CIRCLE_BRANCH} -i
+      - run: cd ~/repo/deploy && ls
+      - run: cd ~/repo/deploy/${CIRCLE_BRANCH} && ls
       - deploy:
           name: Trigger commit and push
           working_directory: ~/repo/deploy
