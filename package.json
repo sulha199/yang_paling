@@ -8,7 +8,7 @@
     "test": "ng test --code-coverage --watch=false",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "npx": "npx ngh --dir=dist 
+    "npx": "npx ngh --dir=dist",
     "deploy": "ngh"
   },
   "private": true,
