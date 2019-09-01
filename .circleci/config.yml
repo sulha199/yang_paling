@@ -39,17 +39,23 @@ jobs:
     steps:
       - restore_cache: # special step to restore the deploy cache
           key: dependency-cache-${CIRCLE_BRANCH}-${CIRCLE_SHA1}
-      - add_ssh_keys:
-          fingerprints:
-            - "a5:a6:8b:1e:ff:a6:d5:f7:03:fa:75:a3:14:68:f4:d3"
-      - run: ls -la ~/.ssh/
-      - run:
+#       - add_ssh_keys:
+#           fingerprints:
+#             - "a5:a6:8b:1e:ff:a6:d5:f7:03:fa:75:a3:14:68:f4:d3"
+      - run: 
           name: Clone gh-pages branch
           working_directory: ~/repo/deploy
-          command: >-
-            GIT_SSH_COMMAND='ssh-add ~/.ssh/id_rsa_a5a68b1effa6d5f703fa75a31468f4d3'
-            GIT_SSH_COMMAND='ssh -T git@github.com'
-            git clone --depth 1 -b gh-pages git@github.com:sulha199/yang_paling.git .
+          command: |
+            mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+            git clone -b gh-pages $CIRCLE_REPOSITORY_URL .
+      - run: ls -la ~/.ssh/
+#       - run:
+#           name: Clone gh-pages branch
+#           working_directory: ~/repo/deploy
+#           command: >-
+#             GIT_SSH_COMMAND='ssh-add ~/.ssh/id_rsa_a5a68b1effa6d5f703fa75a31468f4d3'
+#             GIT_SSH_COMMAND='ssh -T git@github.com'
+#             git clone --depth 1 -b gh-pages git@github.com:sulha199/yang_paling.git .
       - run: ls
       - run:
           name: delete folder with current branch name if exist
