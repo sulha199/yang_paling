@@ -26,7 +26,7 @@ jobs:
       - run: npm test
       - run: npm run build -- --prod --base-href="https://sulha199.github.io/yang_paling/${CIRCLE_BRANCH}/"
       - save_cache: # special step to save the dist cache	
-          key: dependency-cache-${CIRCLE_BRANCH}-${CIRCLE_SHA1}
+          key: dependency-cache-${CIRCLE_BRANCH}-${CIRCLE_SHA1}-${CIRCLE_BUILD_NUM}
           paths:
             - ~/repo/dist
       - run: ls
@@ -38,7 +38,7 @@ jobs:
     working_directory: ~/repo
     steps:
       - restore_cache: # special step to restore the deploy cache
-          key: dependency-cache-${CIRCLE_BRANCH}-${CIRCLE_SHA1}
+          key: dependency-cache-${CIRCLE_BRANCH}-${CIRCLE_SHA1}-${CIRCLE_BUILD_NUM}
       - add_ssh_keys:
           fingerprints:
             - "a5:a6:8b:1e:ff:a6:d5:f7:03:fa:75:a3:14:68:f4:d3"
@@ -67,6 +67,7 @@ jobs:
             git config user.email "sulha199@gmail.com"
             git config user.name "Deployment Bot"
             git add .
+            git status
             git commit --allow-empty -m "commited by CI [skip ci]"
             # Push quietly to prevent showing the token in log
             git push -q
