@@ -47,7 +47,8 @@ jobs:
           name: Clone gh-pages branch
           working_directory: ~/repo/deploy
           command: >-
-            GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_a5a68b1effa6d5f703fa75a31468f4d3'
+            GIT_SSH_COMMAND='ssh-add ~/.ssh/id_rsa_a5a68b1effa6d5f703fa75a31468f4d3'
+            GIT_SSH_COMMAND='ssh -T git@github.com'
             git clone --depth 1 -b gh-pages git@github.com:sulha199/yang_paling.git .
       - run: ls
       - run:
