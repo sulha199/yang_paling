@@ -39,9 +39,9 @@ jobs:
     steps:
       - restore_cache: # special step to restore the deploy cache
           key: dependency-cache-${CIRCLE_BRANCH}-${CIRCLE_SHA1}
-#       - add_ssh_keys:
-#           fingerprints:
-#             - "a5:a6:8b:1e:ff:a6:d5:f7:03:fa:75:a3:14:68:f4:d3"
+      - add_ssh_keys:
+          fingerprints:
+            - "a5:a6:8b:1e:ff:a6:d5:f7:03:fa:75:a3:14:68:f4:d3"
       - run: 
           name: Clone gh-pages branch
           working_directory: ~/repo/deploy
