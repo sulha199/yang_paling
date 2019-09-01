@@ -46,7 +46,7 @@ jobs:
           name: Clone gh-pages branch
           working_directory: ~/repo/deploy
           command: |
-            mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
             git clone -b gh-pages $CIRCLE_REPOSITORY_URL .
       - run: ls -la ~/.ssh/
 #       - run:
