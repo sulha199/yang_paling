@@ -47,6 +47,7 @@ jobs:
           working_directory: ~/repo/deploy
           command: |
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+            GIT_SSH_COMMAND='ssh-add ~/.ssh/id_rsa_a5a68b1effa6d5f703fa75a31468f4d3'
             git clone -b gh-pages $CIRCLE_REPOSITORY_URL .
       - run: ls -la ~/.ssh/
 #       - run:
