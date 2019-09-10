@@ -1,15 +1,15 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { HeaderNavbarComponent } from './components/layouts/header-navbar/header-navbar.component';
-import { MaterialModule } from './modules/material.module';
-import { LetDirective } from './directives/let/let.directive';
-import { GlobalSearchComponent } from './components/inputs/global-search/global-search.component';
+import { HeaderNavbarComponent } from './core/layouts/header-navbar/header-navbar.component';
+import { MaterialModule } from './shared/modules/material.module';
+import { LetDirective } from './shared/directives/let/let.directive';
+import { GlobalSearchComponent } from './core/layouts/global-search/global-search.component';
 import { FormsModule } from '@angular/forms';
 import { Component } from '@angular/core';
 import { NgxsModule, Store } from '@ngxs/store';
-import { DisplayModeState } from './ngxs/states/displayMode.states';
-import { IFramePageState } from './ngxs/states/iframePage.state';
+import { DisplayModeState } from './core/ngxs/states/displayMode.states';
+import { IFramePageState } from './core/ngxs/states/iframePage.state';
 
 @Component({
   selector: 'app-header-navbar',
@@ -18,7 +18,7 @@ import { IFramePageState } from './ngxs/states/iframePage.state';
 class MockAppHeaderComponent {}
 
 
-fdescribe('AppComponent', () => {
+describe('AppComponent', () => {
   let store: Store;
 
   beforeEach(async(() => {

@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { SortBy, GlobalSearchValueModel } from 'src/app/model/globalSearch.model';
 import { MatSelect } from '@angular/material';
 import { Store } from '@ngxs/store';
-import { SearchStart } from 'src/app/ngxs/actions/globalSearch.actions';
+import { SearchStart } from 'src/app/core/ngxs/actions/productSearch.actions';
+import { SortBy } from 'src/app/core/model/marketplace/productSearch.model';
 
 @Component({
   selector: 'app-global-search',
@@ -17,9 +17,9 @@ export class GlobalSearchComponent implements OnInit {
 
   searchValue = '';
   sortOptions: Array<{key: SortBy, label: string}> = [
-    { key: SortBy.price_asc, label: 'murah'},
-    { key: SortBy.price_desc, label: 'mahal'},
-    { key: SortBy.most_selling, label: 'laris'},
+    { key: SortBy.priceAsc, label: 'murah'},
+    { key: SortBy.priceDesc, label: 'mahal'},
+    { key: SortBy.mostSelling, label: 'laris'},
     { key: SortBy.newest, label: 'baru'}
   ];
   sortValue = this.sortOptions[0].key;

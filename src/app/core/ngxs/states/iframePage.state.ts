@@ -1,8 +1,8 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { OpenIframe, CloseIframe, ToggleIframe } from '../actions/iframe.actions';
 import { SwitchDisplayMode } from '../actions/displayMode.actions';
-import { DISPLAY_MODE_NORMAL } from 'src/app/model/displayMode.model';
-import { IframePageModel, EMPTY_IFRAME_PAGE } from 'src/app/model/iframePage.model';
+import { DISPLAY_MODE_NORMAL } from 'src/app/core/model/displayMode.model';
+import { IframePageModel, EMPTY_IFRAME_PAGE } from 'src/app/core/model/iframePage.model';
 
 @State<IframePageModel>({
   name: 'iframePage',

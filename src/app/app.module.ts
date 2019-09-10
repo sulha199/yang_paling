@@ -3,35 +3,33 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LetDirective } from './directives/let/let.directive';
 import { Store, NgxsModule } from '@ngxs/store';
-import { DisplayModeState } from './ngxs/states/displayMode.states';
-import { HeaderNavbarComponent } from './components/layouts/header-navbar/header-navbar.component';
-import { MaterialModule } from './modules/material.module';
+import { DisplayModeState } from './core/ngxs/states/displayMode.states';
+import { HeaderNavbarComponent } from './core/layouts/header-navbar/header-navbar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TextInputComponent } from './components/inputs/text-input/text-input.component';
-import { GlobalSearchComponent } from './components/inputs/global-search/global-search.component';
-import { IFramePageState } from './ngxs/states/iframePage.state';
+import { IFramePageState } from './core/ngxs/states/iframePage.state';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from './shared/shared.module';
+import { CoreModule } from './core/core.module';
+import { IndexComponent } from './pages/index/index.component';
+import { ProductSearchComponent } from './pages/product-search/product-search.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LetDirective,
-    HeaderNavbarComponent,
-    TextInputComponent,
-    GlobalSearchComponent,
+    IndexComponent,
+    ProductSearchComponent,
   ],
   imports: [
     AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
-    FormsModule,
-    MaterialModule,
+    CoreModule,
     NgxsModule.forRoot([
       DisplayModeState,
       IFramePageState,
-    ])
+    ]),
+    SharedModule,
   ],
   providers: [
   ],

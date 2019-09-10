@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HeaderNavbarComponent } from './header-navbar.component';
-import { GlobalSearchComponent } from '../../inputs/global-search/global-search.component';
-import { MaterialModule } from 'src/app/modules/material.module';
+import { MaterialModule } from 'src/app/shared/modules/material.module';
+import { FormsModule } from '@angular/forms';
+import { MockGlobalSearchComponent } from '../../../mocks/component/global-search.mock.component';
 
 describe('HeaderNavbarComponent', () => {
   let component: HeaderNavbarComponent;
@@ -12,10 +13,11 @@ describe('HeaderNavbarComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         HeaderNavbarComponent,
-        GlobalSearchComponent,
+        MockGlobalSearchComponent,
       ],
       imports: [
         MaterialModule,
+        FormsModule
       ]
     })
     .compileComponents();

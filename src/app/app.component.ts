@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { DisplayModeState } from './ngxs/states/displayMode.states';
+import { DisplayModeState } from './core/ngxs/states/displayMode.states';
 import { Observable, from } from 'rxjs';
-import { DisplayModeModel, DISPLAY_MODE_SHOW_FEATURED, DISPLAY_MODE_NORMAL } from './model/displayMode.model';
+import { DisplayModeModel, DISPLAY_MODE_SHOW_FEATURED, DISPLAY_MODE_NORMAL } from './core/model/displayMode.model';
 import { take, map } from 'rxjs/operators';
-import { SwitchDisplayMode } from './ngxs/actions/displayMode.actions';
-import { IFramePageState } from './ngxs/states/iframePage.state';
-import { OpenIframe, CloseIframe, ToggleIframe } from './ngxs/actions/iframe.actions';
-import { IframePageModel } from './model/iframePage.model';
+import { SwitchDisplayMode } from './core/ngxs/actions/displayMode.actions';
+import { IFramePageState } from './core/ngxs/states/iframePage.state';
+import { OpenIframe, CloseIframe, ToggleIframe } from './core/ngxs/actions/iframe.actions';
+import { IframePageModel } from './core/model/iframePage.model';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
