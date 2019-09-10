@@ -1,14 +1,14 @@
-import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { GlobalSearchComponent } from './global-search.component';
-import { MaterialModule } from 'src/app/modules/material.module';
+import { MaterialModule } from 'src/app/shared/modules/material.module';
 import { FormsModule } from '@angular/forms';
 import { NgxsModule, Store } from '@ngxs/store';
-import { GlobalSearchState } from 'src/app/ngxs/states/globalSearch.State';
-import { SearchStart } from 'src/app/ngxs/actions/globalSearch.actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SearchStart } from '../../ngxs/actions/productSearch.actions';
+import { ProductSearchState } from '../../ngxs/states/productSearch.State';
 
-fdescribe('GlobalSearchComponent', () => {
+describe('GlobalSearchComponent', () => {
   let component: GlobalSearchComponent;
   let fixture: ComponentFixture<GlobalSearchComponent>;
   let store: Store;
@@ -19,7 +19,7 @@ fdescribe('GlobalSearchComponent', () => {
       imports: [
         MaterialModule,
         FormsModule,
-        NgxsModule.forRoot([GlobalSearchState]),
+        NgxsModule.forRoot([ProductSearchState]),
         BrowserAnimationsModule,
       ]
     })
@@ -51,6 +51,7 @@ fdescribe('GlobalSearchComponent', () => {
   it('should show dropdown on input click', fakeAsync(() => {
     component.inputRef.nativeElement.click();
     fixture.detectChanges();
+    tick(500);
 
     expect(component.isOptionsVisible$.value).toBe(true);
   }));
@@ -61,8 +62,10 @@ fdescribe('GlobalSearchComponent', () => {
     component.searchValue = '';
     component.inputRef.nativeElement.click();
     fixture.detectChanges();
+    tick(500);
     component.iconRef.nativeElement.click();
     fixture.detectChanges();
+    tick(500);
 
     expect(component.blur).toHaveBeenCalled();
     expect(component.isOptionsVisible$.value).toBe(false);
