@@ -1,4 +1,4 @@
-import { ProductSearchStateModel, DEFAULT_PRODUCT_SEARCH_STATE, ProductSearchParamsModel } from 'src/app/model/marketplace/productSearch.model';
+import { ProductSearchStateModel, DEFAULT_PRODUCT_SEARCH_STATE, ProductSearchParamsModel } from 'src/app/core/model/marketplace/productSearch.model';
 import { State, Action, StateContext } from '@ngxs/store';
 import { SearchStart, SearchReset, SearchUpdateSortBy, SearchUpdatePriceRange } from '../actions/productSearch.actions';
 

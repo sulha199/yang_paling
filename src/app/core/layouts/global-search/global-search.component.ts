@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { MatSelect } from '@angular/material';
 import { Store } from '@ngxs/store';
 import { SearchStart } from 'src/app/core/ngxs/actions/productSearch.actions';
-import { SortBy } from 'src/app/model/marketplace/productSearch.model';
+import { SortBy } from 'src/app/core/model/marketplace/productSearch.model';
 
 @Component({
   selector: 'app-global-search',

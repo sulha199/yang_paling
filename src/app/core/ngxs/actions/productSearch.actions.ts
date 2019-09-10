@@ -1,4 +1,4 @@
-import { ProductSearchParamsModel, SortBy } from 'src/app/model/marketplace/productSearch.model';
+import { ProductSearchParamsModel, SortBy } from 'src/app/core/model/marketplace/productSearch.model';
 
 export class SearchStart {
   static readonly type = '[Product Search] start';

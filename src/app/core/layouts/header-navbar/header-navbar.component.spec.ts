@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderNavbarComponent } from './header-navbar.component';
 import { MaterialModule } from 'src/app/shared/modules/material.module';
 import { FormsModule } from '@angular/forms';
-import { MockGlobalSearchComponent } from '../global-search/global-search.mock.component';
+import { MockGlobalSearchComponent } from '../../../mocks/component/global-search.mock.component';
 
 describe('HeaderNavbarComponent', () => {
   let component: HeaderNavbarComponent;

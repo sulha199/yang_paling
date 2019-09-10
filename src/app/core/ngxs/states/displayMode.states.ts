@@ -1,4 +1,4 @@
-import { DisplayModeModel, DISPLAY_MODE_NORMAL } from 'src/app/model/displayMode.model';
+import { DisplayModeModel, DISPLAY_MODE_NORMAL } from 'src/app/core/model/displayMode.model';
 import { State, Action, StateContext } from '@ngxs/store';
 import { SwitchDisplayMode } from '../actions/displayMode.actions';
 

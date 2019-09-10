@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MarketPlaceModel, members as  MarketPlaceMembers} from 'src/app/model/marketplace';
+import { MarketPlaceModel, members as  MarketPlaceMembers} from 'src/app/core/model/marketplace';
 
 @Injectable({
   providedIn: 'root'
