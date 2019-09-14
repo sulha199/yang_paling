@@ -18,7 +18,6 @@
       *ngIf="(displayMode$ | async).showMainContent"
       class="content-main"
       [class.with-iframe]="isIframeOpen"
-      (click)="openIframe()"
     >
     main
       <router-outlet></router-outlet>
