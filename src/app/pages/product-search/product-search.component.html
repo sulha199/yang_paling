@@ -1,1 +1,6 @@
-<p>product-search works!</p>
+<div class="container">
+  <ng-container *ngFor="let item of (productResults$ | async).results" >
+    <app-product-card [item]="item"></app-product-card>
+  </ng-container>
+</div>
+
