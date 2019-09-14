@@ -1,0 +1,29 @@
+.product-card {
+  width: 150px;
+  height: 300px;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 5px;
+  overflow: hidden;
+  cursor: pointer;
+
+  .mat-card-title {
+    text-align: center;
+    font-size: 1em;
+  }
+
+  .mat-card-content {
+    font-size: 1em;
+  }
+
+  .row {
+    display: flex;
+    .right {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+}

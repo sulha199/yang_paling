@@ -1,0 +1,16 @@
+<mat-card class="product-card" (click)="openIframe()">
+  <img mat-card-image [src]="item.thumbnail">
+  <mat-card-title>{{ item.title }}</mat-card-title>
+  <mat-card-content>
+    <div class="">
+      <div class="row">
+        <div class="left">Rp {{ item.price }}</div>
+        <div class="right"></div>
+      </div>
+      <div class="row">
+        <div class="left">{{ item.origin }} {{ item.sellerName }}</div>
+        <div class="right">{{ item.location }}</div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
