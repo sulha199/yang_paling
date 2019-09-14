@@ -1,5 +1,7 @@
-import { map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { ProductSearchResultModel } from './productSearch.model';
+import { map, tap } from 'rxjs/operators';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface ProductSearchStateModel {
   searchValue: ProductSearchParamsModel;
@@ -18,19 +20,30 @@ export interface ProductSearchParamsModel {
 
 export interface ProductSearchResultModel {
   title: string;
+  thumbnail: string;
+  sellerName: string;
+  location: string;
+  price: number;
+  productUrl: string;
+  origin?: string;
 }
 
-export abstract class ProductSearchClassModel {
-  abstract buildRequestUrl(searchValue: ProductSearchParamsModel): string;
-  abstract parseProductSearchResult<T>(apiResponse: T): ProductSearchResultModel[];
+export abstract class ProductSearchClassModel<T> {
+  isProcessing$ = new BehaviorSubject(false);
 
   constructor(
     private http: HttpClient
   ) {}
 
-  productSearch<T>(searchValue: ProductSearchParamsModel) {
-    return this.http.get<T>(this.buildRequestUrl(searchValue)).pipe(
-      map(response => this.parseProductSearchResult(response))
+  abstract buildRequestUrl(searchValue: ProductSearchParamsModel): { url: string; params: HttpParams };
+  abstract parseProductSearchResult(apiResponse: T): ProductSearchResultModel[];
+
+  productSearch(searchValue: ProductSearchParamsModel): Observable<ProductSearchResultModel[]> {
+    this.isProcessing$.next(true);
+    const { url, params} = this.buildRequestUrl(searchValue);
+    return this.http.get<T>(url, { params: params}).pipe(
+      map(response => this.parseProductSearchResult(response)),
+      tap(() => this.isProcessing$.next(false))
     );
   }
 }
