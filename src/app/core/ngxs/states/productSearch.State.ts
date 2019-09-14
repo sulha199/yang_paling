@@ -5,6 +5,8 @@ import { State, Action, StateContext } from '@ngxs/store';
 import { SearchStart, SearchReset, SearchUpdateSortBy, SearchUpdatePriceRange } from '../actions/productSearch.actions';
 import { forkJoin, Observable, pipe } from 'rxjs';
 import { map, take } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { routesList } from 'src/app/app-routing.module';
 
 @State<ProductSearchStateModel>({
   name: 'productSearch',
@@ -13,6 +15,7 @@ import { map, take } from 'rxjs/operators';
 export class ProductSearchState {
   constructor(
     private marketplaceService: MarketplaceService,
+    private router: Router
   ) {}
 
   @Action(SearchStart)
@@ -23,6 +26,7 @@ export class ProductSearchState {
       searchValue: { ...DEFAULT_PRODUCT_SEARCH_STATE.searchValue, ...action.searchValue}
     };
     ctx.setState(state);
+    this.router.navigate([routesList.productSearch]);
     this.performSearch(state).pipe(
       map((results) => results.reduce((all: ProductSearchResultModel[], result) => all.concat(result))),
       take(1)

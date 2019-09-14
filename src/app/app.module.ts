@@ -1,3 +1,4 @@
+import { ProductSearchModule } from './pages/product-search/product-search.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -14,18 +15,19 @@ import { CoreModule } from './core/core.module';
 import { IndexComponent } from './pages/index/index.component';
 import { ProductSearchComponent } from './pages/product-search/product-search.component';
 import { ProductSearchState } from './core/ngxs/states/productSearch.State';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
-    ProductSearchComponent,
   ],
   imports: [
     AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
     CoreModule,
+    ProductSearchModule,
     NgxsModule.forRoot([
       DisplayModeState,
       IFramePageState,
