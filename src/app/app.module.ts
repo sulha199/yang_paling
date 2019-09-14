@@ -13,6 +13,7 @@ import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
 import { IndexComponent } from './pages/index/index.component';
 import { ProductSearchComponent } from './pages/product-search/product-search.component';
+import { ProductSearchState } from './core/ngxs/states/productSearch.State';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { ProductSearchComponent } from './pages/product-search/product-search.co
     NgxsModule.forRoot([
       DisplayModeState,
       IFramePageState,
+      ProductSearchState,
     ]),
     SharedModule,
   ],
