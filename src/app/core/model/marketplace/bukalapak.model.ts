@@ -33,33 +33,29 @@ export class BukalapakProductSearch extends ProductSearchClassModel<string> {
   };
 
   buildRequestUrl(params: ProductSearchParamsModel) {
-    const url = 'https://www.bukalapak.com/products';
+    const url = 'https://still-lowlands-56721.herokuapp.com/api/bl';
     const urlParams = new HttpParams()
-      .append('utf8', '✓')
-      .append('source', 'navbar')
-      .append('search[keywords]', params.text)
-      .append('search[sort_by]', this.sortOptions[params.sortBy])
-      .append('search[price_min]', params.priceMin.toString())
-      .append('search[price_max]', params.priceMax.toString());
+      .set('search[keywords]', params.text)
+      .set('search[sort_by]', this.sortOptions[params.sortBy])
+      .set('search[price_min]', params.priceMin.toString())
+      .set('search[price_max]', params.priceMax.toString());
 
     return { url, params: urlParams };
   }
 
-  parseProductSearchResult(apiResponse: string) {
-    return [];
-    // const $ = load(apiResponse);
-
-    // return $('li.product--sem article.product-display').toArray().map(html => {
-    //   const element = load(html);
-    //   return ({
-    //     title: element('a.title').text(),
-    //     location: element('.product-seller .user-city .user-city__txt').text(),
-    //     price: parseFloat(element('.product-price .amount').text()),
-    //     productUrl: element('a.title').attr().href,
-    //     sellerName: element('.product-seller .user__name a').text(),
-    //     thumbnail: element('.product-picture .product-media__img').attr().src,
-    //   } as ProductSearchResultModel);
-    // });
+  parseProductSearchResult(htmlString: string) {
+    const htmlResponse = document.createElement('html');
+    htmlResponse.innerHTML = htmlString;
+    return Array.from(htmlResponse.querySelectorAll('li.product--sem article.product-display')).map(element => {
+      return ({
+        title: element.querySelector('a.title').innerHTML,
+        location: element.querySelector('.product-seller .user-city .user-city__txt').innerHTML,
+        price: parseFloat(element.querySelector('.product-price .amount').innerHTML),
+        productUrl: element.querySelector('a.title').getAttribute('href'),
+        sellerName: element.querySelector('.product-seller .user__name a').innerHTML,
+        thumbnail: element.querySelector('.product-picture .product-media__img').getAttribute('src'),
+      } as ProductSearchResultModel);
+    });
   }
 }
 
