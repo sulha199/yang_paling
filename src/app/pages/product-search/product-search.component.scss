@@ -1,4 +1,11 @@
-.container {
+.filters {
+  margin: 5px 0;
+  .marketplaces {
+
+  }
+}
+
+.product-results {
   display: flex;
   flex-flow: row wrap;
 }

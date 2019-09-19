@@ -1,6 +1,16 @@
-<div class="container">
-  <ng-container *ngFor="let item of (productResults$ | async).results" >
+<div class="filters">
+  <div class="marketplaces">
+    <app-marketplace-filter
+      [marketplaces]="(productResults$ | async)?.marketplace"
+      [getProgressCallback]="searchingStatusCallback"
+      (marketplacesStates)="updateMarketPlaceFilter($event)"></app-marketplace-filter>
+  </div>
+</div>
+<div class="product-results">
+  <ng-container *ngFor="let item of (productResults$ | async).showedResults" >
     <app-product-card [item]="item"></app-product-card>
   </ng-container>
 </div>
+
+
 
