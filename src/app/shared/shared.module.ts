@@ -4,11 +4,13 @@ import { MaterialModule } from './modules/material.module';
 import { FormsModule } from '@angular/forms';
 import { LetDirective } from './directives/let/let.directive';
 import { ProductCardComponent } from './components/product-card/product-card.component';
+import { MarketplaceFilterComponent } from './components/marketplace-filter/marketplace-filter.component';
 
 @NgModule({
   declarations: [
     LetDirective,
-    ProductCardComponent
+    MarketplaceFilterComponent,
+    ProductCardComponent,
   ],
   imports: [
     CommonModule,
@@ -19,6 +21,7 @@ import { ProductCardComponent } from './components/product-card/product-card.com
     LetDirective,
     ProductCardComponent,
     FormsModule,
+    MarketplaceFilterComponent,
     MaterialModule,
   ]
 })
