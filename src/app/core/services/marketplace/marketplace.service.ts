@@ -11,6 +11,6 @@ export class MarketplaceService {
   constructor(
     private http: HttpClient
   ) {
-    this.members = MarketPlaceMembers.map(model => new model(http));
+    this.members = MarketPlaceMembers.map(marketplace => marketplace(http));
   }
 }
