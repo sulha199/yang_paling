@@ -2,11 +2,19 @@ import { ProductSearchResultModel } from './productSearch.model';
 import { map, tap } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { MarketPlaceModel } from './marketPlace.model';
+
+export interface ProductSearchFilter {
+  marketplaces: Record<string, boolean>;
+}
 
 export interface ProductSearchStateModel {
   searchValue: ProductSearchParamsModel;
   results: ProductSearchResultModel[];
+  showedResults: ProductSearchResultModel[];
   sourceStates: boolean[];
+  marketplace: MarketPlaceModel[];
+  filter: ProductSearchFilter;
 }
 
 export interface ProductSearchParamsModel {
@@ -41,7 +49,7 @@ export abstract class ProductSearchClassModel<T> {
   productSearch(searchValue: ProductSearchParamsModel): Observable<ProductSearchResultModel[]> {
     this.isProcessing$.next(true);
     const { url, params} = this.buildRequestUrl(searchValue);
-    return this.http.get<T>(url, { params: params}).pipe(
+    return this.http.get<T>(url, { params}).pipe(
       map(response => this.parseProductSearchResult(response)),
       tap(() => this.isProcessing$.next(false))
     );

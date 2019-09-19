@@ -1,6 +1,14 @@
 import { ProductSearchParamsModel, ProductSearchClassModel, SortBy, ProductSearchResultModel } from './productSearch.model';
-import { MarketPlaceModel } from './marketPlace.model';
+import { MarketPlaceModel, MarketPlaceInfoModel } from './marketPlace.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
+
+export const TOKOPEDIA_INFO = {
+  name: 'Tokopedia',
+  shortName: 'TP',
+  logo: 'assets/marketplace/toped.png',
+  mainColor: '#42B549',
+  currency: 'IDR'
+} as MarketPlaceInfoModel;
 
 export class TokopediaProductSearch extends ProductSearchClassModel<TokopediaProductSearchResponse> {
   sortOptions = {
@@ -23,7 +31,7 @@ export class TokopediaProductSearch extends ProductSearchClassModel<TokopediaPro
       .append('pmin', params.priceMin.toString())
       .append('pmax', params.priceMax.toString());
 
-    return { url: url, params: urlParams };
+    return {url, params: urlParams };
   }
 
   parseProductSearchResult(apiResponse: TokopediaProductSearchResponse) {
@@ -35,20 +43,6 @@ export class TokopediaProductSearch extends ProductSearchClassModel<TokopediaPro
       sellerName: product.shop.name,
       thumbnail: product.image_uri_700,
     } as ProductSearchResultModel));
-  }
-}
-
-export class TokopediaModel implements MarketPlaceModel {
-  name = 'Tokopedia';
-  shortName = 'BL';
-  logo = 'bl.png';
-  mainColor = '#ff0000';
-  productSearch: ProductSearchClassModel<TokopediaProductSearchResponse>;
-
-  constructor(
-    private http: HttpClient
-  ) {
-    this.productSearch = new TokopediaProductSearch(this.http);
   }
 }
 

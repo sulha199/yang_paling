@@ -1,51 +1,6 @@
 import { ProductSearchParamsModel, ProductSearchClassModel, SortBy, ProductSearchResultModel } from './productSearch.model';
-import { MarketPlaceModel } from './marketPlace.model';
+import { MarketPlaceModel, MarketPlaceInfoModel } from './marketPlace.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
-
-export class BukalapakProductSearch extends ProductSearchClassModel<BukalapakProductSearchResponse> {
-  sortOptions = {
-    [SortBy.priceAsc]: 'Termurah',
-    [SortBy.priceDesc]: 'Termahal',
-    [SortBy.newest]: 'Terbaru',
-    [SortBy.mostSelling]: ''
-  };
-
-  buildRequestUrl(params: ProductSearchParamsModel) {
-    const url = 'https://api.bukalapak.com/v2/products.json';
-    const urlParams = new HttpParams().append('keywords', params.text)
-      .append('per_page', params.perPage.toString())
-      .append('sort_by', this.sortOptions[params.sortBy])
-      .append('price_min', params.priceMin.toString())
-      .append('price_max', params.priceMax.toString());
-
-    return { url: url, params: urlParams };
-  }
-
-  parseProductSearchResult(apiResponse: BukalapakProductSearchResponse) {
-    return apiResponse.data.products.map(product => ({
-      title: product.name,
-      location: product.city,
-      price: product.price,
-      productUrl: product.url,
-      sellerName: product.seller_name,
-      thumbnail: product.small_images[0].replace('/small/', '/s-190-190/'),
-    } as ProductSearchResultModel));
-  }
-}
-
-export class BukalapakModel implements MarketPlaceModel {
-  name = 'Bukalapak';
-  shortName = 'BL';
-  logo = 'bl.png';
-  mainColor = '#ff0000';
-  productSearch: ProductSearchClassModel<BukalapakProductSearchResponse>;
-
-  constructor(
-    private http: HttpClient
-  ) {
-    // this.productSearch = new BukalapakProductSearch(this.http);
-  }
-}
 
 export interface BukalapakProductSearchResponse {
   data: {
@@ -60,4 +15,52 @@ export interface BukalapakProductSearchResponse {
     }[]
   };
 }
+
+export const BUKALAPAK_INFO: MarketPlaceInfoModel = {
+  name: 'Bukalapak',
+  shortName: 'BL',
+  logo: 'bl.png',
+  mainColor: '#ff0000',
+  currency: 'IDR'
+};
+
+export class BukalapakProductSearch extends ProductSearchClassModel<string> {
+  sortOptions = {
+    [SortBy.priceAsc]: 'Termurah',
+    [SortBy.priceDesc]: 'Termahal',
+    [SortBy.newest]: 'Terbaru',
+    [SortBy.mostSelling]: ''
+  };
+
+  buildRequestUrl(params: ProductSearchParamsModel) {
+    const url = 'https://www.bukalapak.com/products';
+    const urlParams = new HttpParams()
+      .append('utf8', '✓')
+      .append('source', 'navbar')
+      .append('search[keywords]', params.text)
+      .append('search[sort_by]', this.sortOptions[params.sortBy])
+      .append('search[price_min]', params.priceMin.toString())
+      .append('search[price_max]', params.priceMax.toString());
+
+    return { url, params: urlParams };
+  }
+
+  parseProductSearchResult(apiResponse: string) {
+    return [];
+    // const $ = load(apiResponse);
+
+    // return $('li.product--sem article.product-display').toArray().map(html => {
+    //   const element = load(html);
+    //   return ({
+    //     title: element('a.title').text(),
+    //     location: element('.product-seller .user-city .user-city__txt').text(),
+    //     price: parseFloat(element('.product-price .amount').text()),
+    //     productUrl: element('a.title').attr().href,
+    //     sellerName: element('.product-seller .user__name a').text(),
+    //     thumbnail: element('.product-picture .product-media__img').attr().src,
+    //   } as ProductSearchResultModel);
+    // });
+  }
+}
+
 
