@@ -1,5 +1,5 @@
 .product-card {
-  width: 150px;
+  width: 170px;
   height: 300px;
   display: flex;
   flex-flow: column;
@@ -8,6 +8,11 @@
   margin: 5px;
   overflow: hidden;
   cursor: pointer;
+  padding: 16px 10px;
+
+  .origin-logo {
+    height: 1em;
+  }
 
   .mat-card-title {
     text-align: center;
@@ -16,14 +21,21 @@
 
   .mat-card-content {
     font-size: 1em;
+    width: 100%;
   }
 
   .row {
     display: flex;
+    justify-content: space-between;
     .right {
       display: flex;
       justify-content: flex-end;
     }
   }
+}
 
+
+.product-card:hover {
+  margin: 3px;
+  padding: 18px 12px;
 }
