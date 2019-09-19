@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  .marketplace-card-filter {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    margin: 0 5px;
+    overflow: hidden;
+    cursor: pointer;
+
+    .mat-card-image {
+      margin: 0;
+      width: 100%;
+    }
+
+    .loading-icon {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: none;
+    }
+
+    &.not-selected {
+      opacity: 0.5;
+    }
+  }
+  .marketplace-card-filter.is-loading {
+    .main-icon {
+      opacity: 0.5;
+    }
+  }
+}

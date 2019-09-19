@@ -1,0 +1,18 @@
+<div class="container">
+  <ng-container *ngFor="let marketplace of marketplaces">
+    <mat-card class="marketplace-card-filter" [class.is-loading]="isInProgress(marketplace.basicInfo.name)"
+      [class.not-selected]="!currentState[marketplace.basicInfo.name]"
+      (click)="togggle(marketplace)">
+      <img mat-card-image
+        class="main-icon"
+        [src]="marketplace.basicInfo.logo"
+        [alt]="marketplace.basicInfo.name"
+        [style.background-color]="marketplace.basicInfo.mainColor">
+      <img mat-card-image
+        src="assets/images/loading-icon.gif"
+        class="loading-icon" />
+    </mat-card>
+  </ng-container>
+</div>
+
+
