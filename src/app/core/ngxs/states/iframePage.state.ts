@@ -1,14 +1,20 @@
-import { State, Action, StateContext, Selector } from '@ngxs/store';
+import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
 import { OpenIframe, CloseIframe, ToggleIframe } from '../actions/iframe.actions';
 import { SwitchDisplayMode } from '../actions/displayMode.actions';
 import { DISPLAY_MODE_NORMAL } from 'src/app/core/model/displayMode.model';
 import { IframePageModel, EMPTY_IFRAME_PAGE } from 'src/app/core/model/iframePage.model';
+import { ProductSearchState } from './productSearch.State';
+import { ProductSearchStateModel } from '../../model/marketplace/productSearch.model';
 
 @State<IframePageModel>({
   name: 'iframePage',
   defaults: EMPTY_IFRAME_PAGE
 })
 export class IFramePageState {
+
+  constructor(
+    private store: Store
+  ) {}
 
   @Selector()
   static isIframeAvailable(state: IframePageModel): boolean {

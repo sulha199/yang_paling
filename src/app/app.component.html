@@ -19,7 +19,6 @@
       class="content-main"
       [class.with-iframe]="isIframeOpen"
     >
-    main
       <router-outlet></router-outlet>
     </div>
     <div *ngIf="isIframeAvailable$ | async" class="content-separator">

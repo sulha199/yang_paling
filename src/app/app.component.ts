@@ -9,6 +9,8 @@ import { IFramePageState } from './core/ngxs/states/iframePage.state';
 import { OpenIframe, CloseIframe, ToggleIframe } from './core/ngxs/actions/iframe.actions';
 import { IframePageModel } from './core/model/iframePage.model';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ProductSearchState } from './core/ngxs/states/productSearch.State';
+import { ProductSearchStateModel } from './core/model/marketplace/productSearch.model';
 
 @Component({
   selector: 'app-root',
@@ -36,8 +38,13 @@ export class AppComponent implements OnInit {
   }
 
   swicthDisplayMode() {
-    this.displayMode$.pipe(take(1)).subscribe(value => {
-      this.store.dispatch(new SwitchDisplayMode(value.name === 'normal' ? DISPLAY_MODE_SHOW_FEATURED : DISPLAY_MODE_NORMAL));
+    this.displayMode$.pipe(
+      take(1)
+    ).subscribe(value => {
+      const searchState: ProductSearchStateModel = this.store.selectSnapshot(ProductSearchState);
+      this.store.dispatch(new SwitchDisplayMode(
+          (value.name === 'normal' && searchState.searchValue.text === '') ? DISPLAY_MODE_SHOW_FEATURED : DISPLAY_MODE_NORMAL
+      ));
     });
   }
 
