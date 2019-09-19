@@ -23,9 +23,9 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
-      - run: npm test
+      - run: npm test -- --watch=false
       - run: npm run build -- --prod --base-href="https://sulha199.github.io/yang_paling/${CIRCLE_BRANCH}/"
-      - save_cache: # special step to save the dist cache	
+      - save_cache: # special step to save the dist cache
           key: dependency-cache-${CIRCLE_BRANCH}-${CIRCLE_SHA1}-${CIRCLE_BUILD_NUM}
           paths:
             - ~/repo/dist
@@ -42,7 +42,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "a5:a6:8b:1e:ff:a6:d5:f7:03:fa:75:a3:14:68:f4:d3"
-      - run: 
+      - run:
           name: Clone gh-pages branch
           working_directory: ~/repo/deploy
           command: |
