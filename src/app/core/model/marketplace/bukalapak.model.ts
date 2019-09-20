@@ -1,6 +1,6 @@
 import { ProductSearchParamsModel, ProductSearchClassModel, SortBy, ProductSearchResultModel } from './productSearch.model';
 import { MarketPlaceModel, MarketPlaceInfoModel } from './marketPlace.model';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
 export interface BukalapakProductSearchResponse {
   data: {
@@ -19,8 +19,8 @@ export interface BukalapakProductSearchResponse {
 export const BUKALAPAK_INFO: MarketPlaceInfoModel = {
   name: 'Bukalapak',
   shortName: 'BL',
-  logo: 'bl.png',
-  mainColor: '#ff0000',
+  logo: 'assets/marketplace/bl.png',
+  mainColor: '#D71149',
   currency: 'IDR'
 };
 
@@ -43,15 +43,19 @@ export class BukalapakProductSearch extends ProductSearchClassModel<string> {
     return { url, params: urlParams };
   }
 
+  sendRequest(url: string, params: HttpParams) {
+    return this.http.get<string>(url, { responseType: 'text' as 'json', params});
+  }
+
   parseProductSearchResult(htmlString: string) {
     const htmlResponse = document.createElement('html');
     htmlResponse.innerHTML = htmlString;
     return Array.from(htmlResponse.querySelectorAll('li.product--sem article.product-display')).map(element => {
       return ({
-        title: element.querySelector('a.title').innerHTML,
+        title: element.querySelector('a.product__name').getAttribute('title') || element.querySelector('a.product__name').innerHTML,
         location: element.querySelector('.product-seller .user-city .user-city__txt').innerHTML,
         price: parseFloat(element.querySelector('.product-price .amount').innerHTML),
-        productUrl: element.querySelector('a.title').getAttribute('href'),
+        productUrl: element.querySelector('a.product__name').getAttribute('href'),
         sellerName: element.querySelector('.product-seller .user__name a').innerHTML,
         thumbnail: element.querySelector('.product-picture .product-media__img').getAttribute('src'),
       } as ProductSearchResultModel);
