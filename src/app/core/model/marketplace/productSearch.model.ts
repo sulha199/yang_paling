@@ -40,16 +40,20 @@ export abstract class ProductSearchClassModel<T> {
   isProcessing$ = new BehaviorSubject(false);
 
   constructor(
-    private http: HttpClient
+    protected http: HttpClient
   ) {}
 
   abstract buildRequestUrl(searchValue: ProductSearchParamsModel): { url: string; params: HttpParams };
   abstract parseProductSearchResult(apiResponse: T): ProductSearchResultModel[];
 
+  sendRequest(url: string, params: HttpParams) {
+    return this.http.get<T>(url, { params});
+  }
+
   productSearch(searchValue: ProductSearchParamsModel): Observable<ProductSearchResultModel[]> {
     this.isProcessing$.next(true);
     const { url, params} = this.buildRequestUrl(searchValue);
-    return this.http.get<T>(url, { params}).pipe(
+    return this.sendRequest(url, params).pipe(
       map(response => this.parseProductSearchResult(response)),
       tap(() => this.isProcessing$.next(false))
     );
@@ -72,6 +76,6 @@ export const DEFAULT_PRODUCT_SEARCH_STATE = {
     priceMin: 0,
     priceMax: 9999999999
   },
-  results: []
+  results: [],
 } as ProductSearchStateModel;
 
