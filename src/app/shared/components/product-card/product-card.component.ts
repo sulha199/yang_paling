@@ -11,14 +11,14 @@ import { MARKETPLACES_RECORDS } from 'src/app/core/model/marketplace';
 })
 export class ProductCardComponent implements OnInit {
   @Input() item: ProductSearchResultModel;
+  scaledRating: number;
 
   readonly marketplaceRecords = MARKETPLACES_RECORDS;
 
-  constructor(
-    private store: Store,
-  ) { }
+  constructor() { }
 
   ngOnInit() {
+    this.scaledRating = (this.item.rating || 0) / 20;
   }
 
   openIframe() {

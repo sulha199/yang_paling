@@ -1,15 +1,20 @@
 <mat-card class="product-card" (click)="openIframe()" [style.border-bottom]="'4px solid ' + marketplaceRecords[item.origin].mainColor">
   <img mat-card-image [src]="item.thumbnail" />
   <mat-card-title>{{ item.title }}</mat-card-title>
+  <mat-card-title>
+    <span class="rating" title="{{ scaledRating }}">
+      <span class="rating__star" [style.width]="item.rating + '%'">{{ scaledRating }}</span>
+    </span>
+  </mat-card-title>
   <mat-card-content>
     <div class="">
       <div class="row">
-        <div class="left">{{ item.price | currency : marketplaceRecords[item.origin].currency : 'symbol' : null : 'id' }}</div>
-        <div class="right"></div>
+        <div class="left"><img class="origin-logo" [src]="marketplaceRecords[item.origin].logo" /> {{ item.sellerName }}</div>
+        <div class="right currency">{{ item.price | currency : marketplaceRecords[item.origin].currency : 'symbol' : null : 'id' }}</div>
       </div>
       <div class="row">
-        <div class="left"><img class="origin-logo" [src]="marketplaceRecords[item.origin].logo" /> {{ item.sellerName }}</div>
-        <div class="right">{{ item.location }}</div>
+        <div class="left">{{ item.location }}</div>
+        <div class="right"></div>
       </div>
     </div>
   </mat-card-content>
