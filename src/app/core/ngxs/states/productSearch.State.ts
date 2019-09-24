@@ -1,10 +1,9 @@
 import { MarketplaceService } from './../../services/marketplace/marketplace.service';
 // tslint:disable-next-line:max-line-length
-import { ProductSearchStateModel, DEFAULT_PRODUCT_SEARCH_STATE, ProductSearchParamsModel, ProductSearchResultModel, ProductSearchFilter } from 'src/app/core/model/marketplace/productSearch.model';
+import { ProductSearchStateModel, DEFAULT_PRODUCT_SEARCH_STATE, ProductSearchParamsModel, ProductSearchResultModel, ProductSearchFilter, SortBy } from 'src/app/core/model/marketplace/productSearch.model';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 // tslint:disable-next-line:max-line-length
 import { SearchStart, SearchReset, SearchUpdateSortBy, SearchUpdatePriceRange, SearchUpdateFilterMarketPlace } from '../actions/productSearch.actions';
-import { forkJoin, Observable, pipe } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { routesList } from 'src/app/app-routing.module';
@@ -20,16 +19,10 @@ export class ProductSearchState {
     private router: Router
   ) {}
 
-  @Selector()
-  static marketplaces(state: ProductSearchStateModel): MarketPlaceModel[] {
-    return state.marketplace;
-  }
-
   ngxsOnInit(ctx: StateContext<ProductSearchStateModel>) {
-    const marketplaceWithProductSearch = this.marketplaceService.members.filter(marketplace => !!marketplace.productSearch);
+    const marketplaceWithProductSearch = this.marketplaceService.productSearchMembers;
     const state: ProductSearchStateModel = {
       ...DEFAULT_PRODUCT_SEARCH_STATE,
-      marketplace: marketplaceWithProductSearch,
       filter: {
         marketplaces: marketplaceWithProductSearch.reduce((obj, marketplace) => {
           obj[marketplace.basicInfo.name] = true;
@@ -44,20 +37,22 @@ export class ProductSearchState {
   start(ctx: StateContext<ProductSearchStateModel>, action: SearchStart) {
     const state  = {
       ...ctx.getState(),
-      searchValue: { ...DEFAULT_PRODUCT_SEARCH_STATE.searchValue, ...action.searchValue}
+      searchValue: { ...DEFAULT_PRODUCT_SEARCH_STATE.searchValue, ...action.searchValue},
+      result: [],
+      showedResults: []
     };
     ctx.setState(state);
     this.router.navigate([routesList.productSearch]);
-    this.performSearch(state).pipe(
-      map((results) => results.reduce((all: ProductSearchResultModel[], result) => all.concat(result))),
-      take(1)
-    ).subscribe(all => {
+    let results: ProductSearchResultModel[] = [];
+    this.createSearchObservables(state).map(search => search.subscribe(result => {
+      results = results.concat(result);
+      this.sortResults(state.searchValue.sortBy, results);
       ctx.setState({
         ...state,
-        results: all,
-        showedResults: this.filterResults(state.filter, all)
+        results,
+        showedResults: this.filterResults(state.filter, results)
       });
-    });
+    }));
   }
 
   @Action(SearchReset)
@@ -92,16 +87,29 @@ export class ProductSearchState {
     });
   }
 
-  performSearch(state: ProductSearchStateModel): Observable<ProductSearchResultModel[][]> {
-    const results$ = state.marketplace.map(
+  createSearchObservables(state: ProductSearchStateModel) {
+    const results$ = this.marketplaceService.productSearchMembers.map(
       marketplace => marketplace.productSearch.productSearch(state.searchValue).pipe(
         map(results => results.map(result => ({ ...result, origin: marketplace.basicInfo.name} as ProductSearchResultModel)))
       )
     );
-    return forkJoin(results$);
+    return results$;
   }
 
   filterResults(filter: ProductSearchFilter, rows: ProductSearchResultModel[]) {
     return rows.filter(row => filter.marketplaces[row.origin]);
+  }
+
+  sortResults(sortBy: SortBy, rows: ProductSearchResultModel[]) {
+    switch (sortBy) {
+      case SortBy.priceAsc:
+        return rows.sort((a, b) => a.price - b.price);
+      case SortBy.priceDesc:
+        return rows.sort((a, b) => b.price - a.price);
+      case SortBy.rating:
+            return rows.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      default:
+        return rows;
+    }
   }
 }
