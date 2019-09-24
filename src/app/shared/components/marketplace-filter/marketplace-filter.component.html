@@ -1,6 +1,6 @@
 <div class="container">
   <ng-container *ngFor="let marketplace of marketplaces">
-    <mat-card class="marketplace-card-filter" [class.is-loading]="isInProgress(marketplace.basicInfo.name)"
+    <mat-card class="marketplace-card-filter" [class.is-loading]="isInProgressStates$[marketplace.basicInfo.name] | async"
       [class.not-selected]="!currentState[marketplace.basicInfo.name]"
       (click)="togggle(marketplace)">
       <img mat-card-image

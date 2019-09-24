@@ -19,14 +19,18 @@
       top: 0;
       display: none;
     }
-
-    &.not-selected {
-      opacity: 0.5;
-    }
   }
+
+  .marketplace-card-filter.not-selected {
+    opacity: 0.5;
+  }
+
   .marketplace-card-filter.is-loading {
     .main-icon {
-      opacity: 0.5;
+      opacity: 0.2;
+    }
+    .loading-icon {
+      display: block;
     }
   }
 }
