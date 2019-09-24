@@ -1,7 +1,7 @@
 <div class="filters">
   <div class="marketplaces">
-    <app-marketplace-filter
-      [marketplaces]="(productResults$ | async)?.marketplace"
+    <app-marketplace-filter #marketplaceFilter
+      [marketplaces]="members"
       [getProgressCallback]="searchingStatusCallback"
       (marketplacesStates)="updateMarketPlaceFilter($event)"></app-marketplace-filter>
   </div>
