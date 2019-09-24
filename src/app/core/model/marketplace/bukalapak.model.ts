@@ -30,7 +30,7 @@ export class BukalapakProductSearch extends ProductSearchClassModel<string> {
     [SortBy.priceDesc]: 'Termahal',
     [SortBy.newest]: 'Terbaru',
     [SortBy.relevance]: '',
-    [SortBy.rating]: 'rating ratio'
+    [SortBy.rating]: 'rating_ratio'
   };
 
   buildRequestUrl(params: ProductSearchParamsModel) {
@@ -39,7 +39,8 @@ export class BukalapakProductSearch extends ProductSearchClassModel<string> {
       .set('search[keywords]', params.text)
       .set('search[sort_by]', this.sortOptions[params.sortBy])
       .set('search[price_min]', params.priceMin.toString())
-      .set('search[price_max]', params.priceMax.toString());
+      .set('search[price_max]', params.priceMax.toString())
+      .set('search[per_page]', params.perPage.toString());
 
     return { url, params: urlParams };
   }
@@ -54,10 +55,11 @@ export class BukalapakProductSearch extends ProductSearchClassModel<string> {
     const productsElements = Array.from(htmlResponse.querySelectorAll('.basic-products article.product-display'));
     htmlResponse = null;
     return productsElements.map(element => {
+      const reducedPrice = element.querySelector('.product-price .product-price__reduced .amount');
       return ({
         title: element.querySelector('a.product__name').getAttribute('title') || element.querySelector('a.product__name').innerHTML,
         location: element.querySelector('.product-seller .user-city .user-city__txt').innerHTML,
-        price: parseFloat(element.querySelector('.product-price .amount').innerHTML.replace(/\./g, '')),
+        price: parseFloat((reducedPrice || element.querySelector('.product-price .amount')).innerHTML.replace(/\./g, '')),
         productUrl: `//bukalapak.com${element.querySelector('a.product__name').getAttribute('href')}`,
         sellerName: element.querySelector('.product-seller .user__name a').innerHTML,
         thumbnail: element.querySelector('.product-picture .product-media__img').getAttribute('data-src'),
