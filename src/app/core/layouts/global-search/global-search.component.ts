@@ -19,8 +19,9 @@ export class GlobalSearchComponent implements OnInit {
   sortOptions: Array<{key: SortBy, label: string}> = [
     { key: SortBy.priceAsc, label: 'murah'},
     { key: SortBy.priceDesc, label: 'mahal'},
-    { key: SortBy.mostSelling, label: 'laris'},
-    { key: SortBy.newest, label: 'baru'}
+    // { key: SortBy.mostSelling, label: 'laris'},
+    // { key: SortBy.newest, label: 'baru'}
+    { key: SortBy.rating, label: 'bagus reviewnya'}
   ];
   sortValue = this.sortOptions[0].key;
 

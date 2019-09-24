@@ -19,7 +19,7 @@ describe('GlobalSearchComponent', () => {
       imports: [
         MaterialModule,
         FormsModule,
-        NgxsModule.forRoot([ProductSearchState]),
+        NgxsModule.forRoot(),
         BrowserAnimationsModule,
       ]
     })

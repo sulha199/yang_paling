@@ -25,6 +25,7 @@ app-global-search {
   .mat-form-field-prefix {
     @include flexbox_horizontal;
     padding-right: .25rem;
+    cursor: pointer;
   }
 
   .mat-form-field-infix {
