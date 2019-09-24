@@ -15,7 +15,8 @@ export class TokopediaProductSearch extends ProductSearchClassModel<TokopediaPro
     [SortBy.priceAsc]: '3',
     [SortBy.priceDesc]: '4',
     [SortBy.newest]: '9',
-    [SortBy.mostSelling]: ''
+    [SortBy.relevance]: '',
+    [SortBy.rating]: '5'
   };
 
   buildRequestUrl(params: ProductSearchParamsModel) {
@@ -42,6 +43,7 @@ export class TokopediaProductSearch extends ProductSearchClassModel<TokopediaPro
       productUrl: product.uri,
       sellerName: product.shop.name,
       thumbnail: product.image_uri_700,
+      rating: product.rating,
     } as ProductSearchResultModel));
   }
 }
@@ -54,6 +56,7 @@ export interface TokopediaProductSearchResponse {
     price: string;
     condition: string;
     uri: string;
+    rating: number;
   }[];
 }
 

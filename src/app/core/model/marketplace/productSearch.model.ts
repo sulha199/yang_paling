@@ -13,7 +13,6 @@ export interface ProductSearchStateModel {
   results: ProductSearchResultModel[];
   showedResults: ProductSearchResultModel[];
   sourceStates: boolean[];
-  marketplace: MarketPlaceModel[];
   filter: ProductSearchFilter;
 }
 
@@ -34,6 +33,8 @@ export interface ProductSearchResultModel {
   price: number;
   productUrl: string;
   origin?: string;
+  sellingCount?: number;
+  rating?: number;
 }
 
 export abstract class ProductSearchClassModel<T> {
@@ -55,7 +56,9 @@ export abstract class ProductSearchClassModel<T> {
     const { url, params} = this.buildRequestUrl(searchValue);
     return this.sendRequest(url, params).pipe(
       map(response => this.parseProductSearchResult(response)),
-      tap(() => this.isProcessing$.next(false))
+      tap((value) => {
+        this.isProcessing$.next(false);
+      })
     );
   }
 }
@@ -63,8 +66,9 @@ export abstract class ProductSearchClassModel<T> {
 export enum SortBy {
   priceAsc = 'price-asc',
   priceDesc = 'price-desc',
+  rating = 'rating',
   newest = 'newest',
-  mostSelling = 'most_selling'
+  relevance = 'relevan'
 }
 
 export const DEFAULT_PRODUCT_SEARCH_STATE = {

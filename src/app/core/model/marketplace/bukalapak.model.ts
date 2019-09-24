@@ -29,7 +29,8 @@ export class BukalapakProductSearch extends ProductSearchClassModel<string> {
     [SortBy.priceAsc]: 'Termurah',
     [SortBy.priceDesc]: 'Termahal',
     [SortBy.newest]: 'Terbaru',
-    [SortBy.mostSelling]: ''
+    [SortBy.relevance]: '',
+    [SortBy.rating]: 'rating ratio'
   };
 
   buildRequestUrl(params: ProductSearchParamsModel) {
@@ -48,16 +49,19 @@ export class BukalapakProductSearch extends ProductSearchClassModel<string> {
   }
 
   parseProductSearchResult(htmlString: string) {
-    const htmlResponse = document.createElement('html');
+    let htmlResponse = document.createElement('html');
     htmlResponse.innerHTML = htmlString;
-    return Array.from(htmlResponse.querySelectorAll('li.product--sem article.product-display')).map(element => {
+    const productsElements = Array.from(htmlResponse.querySelectorAll('.basic-products article.product-display'));
+    htmlResponse = null;
+    return productsElements.map(element => {
       return ({
         title: element.querySelector('a.product__name').getAttribute('title') || element.querySelector('a.product__name').innerHTML,
         location: element.querySelector('.product-seller .user-city .user-city__txt').innerHTML,
-        price: parseFloat(element.querySelector('.product-price .amount').innerHTML),
-        productUrl: element.querySelector('a.product__name').getAttribute('href'),
+        price: parseFloat(element.querySelector('.product-price .amount').innerHTML.replace(/\./g, '')),
+        productUrl: `//bukalapak.com${element.querySelector('a.product__name').getAttribute('href')}`,
         sellerName: element.querySelector('.product-seller .user__name a').innerHTML,
-        thumbnail: element.querySelector('.product-picture .product-media__img').getAttribute('src'),
+        thumbnail: element.querySelector('.product-picture .product-media__img').getAttribute('data-src'),
+        rating: parseFloat(element.querySelector('.rating__star') ? element.querySelector('.rating__star').innerHTML : '') * 20,
       } as ProductSearchResultModel);
     });
   }
