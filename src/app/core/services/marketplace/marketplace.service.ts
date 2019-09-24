@@ -7,10 +7,12 @@ import { MarketPlaceModel, members as  MarketPlaceMembers} from 'src/app/core/mo
 })
 export class MarketplaceService {
   members: MarketPlaceModel[];
+  productSearchMembers: MarketPlaceModel[];
 
   constructor(
     private http: HttpClient
   ) {
     this.members = MarketPlaceMembers.map(marketplace => marketplace(http));
+    this.productSearchMembers = this.members.filter(member => !!member.productSearch);
   }
 }
