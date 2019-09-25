@@ -16,7 +16,7 @@ const mockSearchParams: ProductSearchParamsModel = {
 const keyworwordInclusionLimitRatio = 0.75;
 const ratingorderLimitRatio = 0.5;
 
-describe('Product Search Instances', () => {
+describe('Product Search from All MarketPlaces', () => {
   let http: HttpClient;
   let marketplaceService: MarketplaceService;
 
@@ -35,7 +35,7 @@ describe('Product Search Instances', () => {
   }));
 
   Object.keys(MARKETPLACES_RECORDS).forEach(marketplaceName => {
-    describe(`${marketplaceName} Product Search`, () => {
+    describe(`${marketplaceName}`, () => {
 
       it('should search sort by price asc', done => {
         const marketplace = getMarketPlaceByName(marketplaceName, marketplaceService);
