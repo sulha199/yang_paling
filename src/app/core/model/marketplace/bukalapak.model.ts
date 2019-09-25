@@ -52,7 +52,9 @@ export class BukalapakProductSearch extends ProductSearchClassModel<string> {
   parseProductSearchResult(htmlString: string) {
     let htmlResponse = document.createElement('html');
     htmlResponse.innerHTML = htmlString;
-    const productsElements = Array.from(htmlResponse.querySelectorAll('.basic-products article.product-display'));
+    const productsElements = Array.from(
+      htmlResponse.querySelectorAll('.basic-products > .product-list > .products > .product > article.product-display')
+    );
     htmlResponse = null;
     return productsElements.map(element => {
       const reducedPrice = element.querySelector('.product-price .product-price__reduced .amount');
