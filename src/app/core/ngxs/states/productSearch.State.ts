@@ -46,7 +46,7 @@ export class ProductSearchState {
     let results: ProductSearchResultModel[] = [];
     this.createSearchObservables(state).map(search => search.subscribe(result => {
       results = results.concat(result);
-      this.sortResults(state.searchValue.sortBy, results);
+      results = this.sortResults(state.searchValue.sortBy, results);
       ctx.setState({
         ...state,
         results,
@@ -64,18 +64,6 @@ export class ProductSearchState {
     });
   }
 
-  @Action(SearchUpdateSortBy)
-  updateSortBy(ctx: StateContext<ProductSearchStateModel>, action: SearchUpdateSortBy) {
-    const searchValue: ProductSearchParamsModel = { ...ctx.getState().searchValue, sortBy: action.sortBy };
-    ctx.dispatch(new SearchStart(searchValue));
-  }
-
-  @Action(SearchUpdatePriceRange)
-  updatePriceRange(ctx: StateContext<ProductSearchStateModel>, action: SearchUpdatePriceRange) {
-    const searchValue: ProductSearchParamsModel = { ...ctx.getState().searchValue, priceMin: action.priceMin, priceMax: action.priceMax };
-    ctx.dispatch(new SearchStart(searchValue));
-  }
-
   @Action(SearchUpdateFilterMarketPlace)
   updateFilterMarketPlace(ctx: StateContext<ProductSearchStateModel>, action: SearchUpdateFilterMarketPlace) {
     const state = ctx.getState();
@@ -86,6 +74,22 @@ export class ProductSearchState {
       showedResults: this.filterResults(filter, state.results)
     });
   }
+
+  // @Action(SearchUpdateSortBy)
+  // updateSortBy(ctx: StateContext<ProductSearchStateModel>, action: SearchUpdateSortBy) {
+  //   const searchValue: ProductSearchParamsModel = { ...ctx.getState().searchValue, sortBy: action.sortBy };
+  //   ctx.dispatch(new SearchStart(searchValue));
+  // }
+
+  // @Action(SearchUpdatePriceRange)
+  // updatePriceRange(ctx: StateContext<ProductSearchStateModel>, action: SearchUpdatePriceRange) {
+  //   const searchValue: ProductSearchParamsModel = {
+  //     ...ctx.getState().searchValue,
+  //     priceMin: action.priceMin,
+  //     priceMax: action.priceMax
+  //   };
+  //   ctx.dispatch(new SearchStart(searchValue));
+  // }
 
   createSearchObservables(state: ProductSearchStateModel) {
     const results$ = this.marketplaceService.productSearchMembers.map(
@@ -100,7 +104,7 @@ export class ProductSearchState {
     return rows.filter(row => filter.marketplaces[row.origin]);
   }
 
-  sortResults(sortBy: SortBy, rows: ProductSearchResultModel[]) {
+  sortResults(sortBy: SortBy, rows: ProductSearchResultModel[]): ProductSearchResultModel[] {
     switch (sortBy) {
       case SortBy.priceAsc:
         return rows.sort((a, b) => a.price - b.price);
