@@ -22,9 +22,7 @@ export class MarketplaceFilterComponent implements OnInit {
   ngOnInit() {
     (this.marketplaces || []).forEach(marketplace => {
       this.currentState[marketplace.basicInfo.name] = true;
-      this.isInProgressStates$[marketplace.basicInfo.name] = this.isInProgress(marketplace.basicInfo.name).pipe(
-        tap(value => console.log(marketplace.basicInfo.name + value))
-      );
+      this.isInProgressStates$[marketplace.basicInfo.name] = this.isInProgress(marketplace.basicInfo.name);
     });
 
   }
