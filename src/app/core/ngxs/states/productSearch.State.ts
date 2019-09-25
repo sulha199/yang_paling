@@ -6,7 +6,7 @@ import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { SearchStart, SearchReset, SearchUpdateSortBy, SearchUpdatePriceRange, SearchUpdateFilterMarketPlace } from '../actions/productSearch.actions';
 import { map, take } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { routesList } from 'src/app/app-routing.module';
+import { AppRoutesList } from 'src/app/app-routing.module';
 import { MarketPlaceModel } from '../../model/marketplace';
 
 @State<ProductSearchStateModel>({
@@ -42,7 +42,7 @@ export class ProductSearchState {
       showedResults: []
     };
     ctx.setState(state);
-    this.router.navigate([routesList.productSearch]);
+    this.router.navigate([AppRoutesList.productSearch]);
     let results: ProductSearchResultModel[] = [];
     this.createSearchObservables(state).map(search => search.subscribe(result => {
       results = results.concat(result);
