@@ -1,9 +1,11 @@
+import { DISPLAY_MODE_NORMAL } from 'src/app/core/model/displayMode.model';
 import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { MatSelect } from '@angular/material';
 import { Store } from '@ngxs/store';
 import { SearchStart } from 'src/app/core/ngxs/actions/productSearch.actions';
 import { SortBy } from 'src/app/core/model/marketplace/productSearch.model';
+import { SwitchDisplayMode } from '../../ngxs/actions/displayMode.actions';
 
 @Component({
   selector: 'app-global-search',
@@ -48,6 +50,7 @@ export class GlobalSearchComponent implements OnInit {
         text: this.searchValue,
         sortBy: this.sortValue,
       }));
+      this.store.dispatch(new SwitchDisplayMode(DISPLAY_MODE_NORMAL));
     }
   }
 
