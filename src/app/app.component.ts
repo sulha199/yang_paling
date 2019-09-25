@@ -37,17 +37,6 @@ export class AppComponent implements OnInit {
     this.store.dispatch(new SwitchDisplayMode(DISPLAY_MODE_SHOW_FEATURED));
   }
 
-  swicthDisplayMode() {
-    this.displayMode$.pipe(
-      take(1)
-    ).subscribe(value => {
-      const searchState: ProductSearchStateModel = this.store.selectSnapshot(ProductSearchState);
-      this.store.dispatch(new SwitchDisplayMode(
-          (value.name === 'normal' && searchState.searchValue.text === '') ? DISPLAY_MODE_SHOW_FEATURED : DISPLAY_MODE_NORMAL
-      ));
-    });
-  }
-
   openIframe() {
     // tslint:disable-next-line:max-line-length
     this.store.dispatch(new OpenIframe('https://m.bukalapak.com/p/fashion-pria/dompet-302/22499a7-jual-bogesi-dompet-kulit-pria-bogesi836-omhapgbk'));
