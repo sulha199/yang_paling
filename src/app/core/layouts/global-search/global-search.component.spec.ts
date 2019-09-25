@@ -49,21 +49,25 @@ describe('GlobalSearchComponent', () => {
   }));
 
   it('should show dropdown on input click', fakeAsync(() => {
-    component.inputRef.nativeElement.click();
+    spyOn(component, 'focus').and.callThrough();
+    component.isOptionsVisible$.next(false);
+    fixture.detectChanges();
+    component.inputRef.nativeElement.focus();
     fixture.detectChanges();
     tick(500);
 
+    expect(component.focus).toHaveBeenCalled();
     expect(component.isOptionsVisible$.value).toBe(true);
   }));
 
-  xit('should hide dropdown on input leave', fakeAsync(() => {
+  it('should hide dropdown on input leave', fakeAsync(() => {
     spyOn(component, 'blur').and.callThrough();
-
     component.searchValue = '';
-    component.inputRef.nativeElement.click();
+    component.isOptionsVisible$.next(false);
+    component.inputRef.nativeElement.focus();
     fixture.detectChanges();
-    tick(500);
-    component.iconRef.nativeElement.click();
+
+    component.inputRef.nativeElement.blur();
     fixture.detectChanges();
     tick(500);
 

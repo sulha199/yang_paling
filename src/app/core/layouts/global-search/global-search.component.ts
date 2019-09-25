@@ -41,7 +41,7 @@ export class GlobalSearchComponent implements OnInit {
   }
 
   blur() {
-    this.isOptionsVisible$.next(this.searchValue !== '');
+    this.isOptionsVisible$.next(!!this.searchValue && this.searchValue !== '');
   }
 
   search() {
