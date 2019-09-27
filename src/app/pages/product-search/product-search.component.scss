@@ -1,3 +1,7 @@
+:host {
+  max-height: calc(100vh - 72px);
+}
+
 .filters {
   margin: 5px 0;
   .marketplaces {
@@ -8,4 +12,7 @@
 .product-results {
   display: flex;
   flex-flow: row wrap;
+  height: calc(100%);
+  overflow: auto;
+  padding-bottom: 5px;
 }
