@@ -30,7 +30,7 @@ export class BukalapakProductSearch extends ProductSearchClassModel<string> {
     [SortBy.priceDesc]: 'Termahal',
     [SortBy.newest]: 'Terbaru',
     [SortBy.relevance]: '',
-    [SortBy.rating]: 'rating_ratio'
+    [SortBy.rating]: 'rating_ratio:desc'
   };
 
   buildRequestUrl(params: ProductSearchParamsModel) {
