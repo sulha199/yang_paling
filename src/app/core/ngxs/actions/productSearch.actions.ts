@@ -19,3 +19,8 @@ export class SearchUpdatePriceRange {
   static readonly type = '[Product Search] update price range';
   constructor(public priceMin: number, public priceMax: number) {}
 }
+
+export class SearchUpdateFilterMarketPlace {
+  static readonly type = '[Product Search] update filter marketplace';
+  constructor(public records: Record<string, boolean>) {}
+}

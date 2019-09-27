@@ -9,6 +9,8 @@ import { IFramePageState } from './core/ngxs/states/iframePage.state';
 import { OpenIframe, CloseIframe, ToggleIframe } from './core/ngxs/actions/iframe.actions';
 import { IframePageModel } from './core/model/iframePage.model';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ProductSearchState } from './core/ngxs/states/productSearch.State';
+import { ProductSearchStateModel } from './core/model/marketplace/productSearch.model';
 
 @Component({
   selector: 'app-root',
@@ -33,12 +35,6 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.iframeUrl$ = this.iframe$.pipe(map(iframe => this.sanitizer.bypassSecurityTrustResourceUrl(iframe.url)));
     this.store.dispatch(new SwitchDisplayMode(DISPLAY_MODE_SHOW_FEATURED));
-  }
-
-  swicthDisplayMode() {
-    this.displayMode$.pipe(take(1)).subscribe(value => {
-      this.store.dispatch(new SwitchDisplayMode(value.name === 'normal' ? DISPLAY_MODE_SHOW_FEATURED : DISPLAY_MODE_NORMAL));
-    });
   }
 
   openIframe() {

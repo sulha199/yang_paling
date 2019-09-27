@@ -4,7 +4,7 @@
       class="header-top-gap"
       [class.hidden]="!(displayMode$ | async).showTopGap"
     ></div>
-    <div class="header-main" (click)="swicthDisplayMode()">
+    <div class="header-main">
       <app-header-navbar></app-header-navbar>
     </div>
     <div
@@ -18,9 +18,7 @@
       *ngIf="(displayMode$ | async).showMainContent"
       class="content-main"
       [class.with-iframe]="isIframeOpen"
-      (click)="openIframe()"
     >
-    main
       <router-outlet></router-outlet>
     </div>
     <div *ngIf="isIframeAvailable$ | async" class="content-separator">

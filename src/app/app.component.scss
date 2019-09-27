@@ -42,15 +42,17 @@ header {
 }
 
 content {
-  flex: 1 1 auto;
+  flex: 0 0 calc(100% - #{$footer-height + $header-height + 3}px);
+  max-height: calc(100% - #{$footer-height + $header-height + 3}px);
   transition: $transition-normal;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
 
   .content-main {
-    flex: 1 1 auto;
+    flex: 0 0 100%;
     transition: $transition-normal;
+    overflow: auto;
     &.with-iframe {
       flex: 0 0 90px;
     }
@@ -140,6 +142,6 @@ content {
 }
 
 footer {
-  flex: 0 0 2rem;
+  flex: 0 0 #{$footer-height}px;
   background: $color-dark;
 }

@@ -13,14 +13,25 @@ app-global-search {
     display: none;
   }
 
+  .mat-form-field-appearance-legacy {
+    .mat-form-field-wrapper {
+      padding: 0;
+    }
+    .mat-form-field-underline {
+      display: none;
+    }
+  }
+
   .mat-form-field-prefix {
     @include flexbox_horizontal;
     padding-right: .25rem;
+    cursor: pointer;
   }
 
   .mat-form-field-infix {
     width: auto;
-    flex: 0 0 auto;
+    flex: 0 1 auto;
+    border: 0;
     input {
       font-weight: bold;
       width: auto;
@@ -41,5 +52,9 @@ app-global-search {
 
   .mat-select-value-text {
     font-weight: bold;
+  }
+
+  .input.mat-input-element {
+    margin: 0;
   }
 }
