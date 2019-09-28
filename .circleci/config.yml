@@ -82,8 +82,8 @@ jobs:
     working_directory: ~/repo
     steps:
       - restore_cache: # special step to restore the deploy cache
-        name: restore coverage-cache-{{ .Branch }}-{{ .Revision }}
-        key: coverage-cache-{{ .Branch }}-{{ .Revision }}
+          name: restore coverage-cache-{{ .Branch }}-{{ .Revision }}
+          key: coverage-cache-{{ .Branch }}-{{ .Revision }}
       - store_artifacts:
-        path: ~/repo/coverage
-        destination: coverage
+          path: ~/repo/coverage
+          destination: coverage
