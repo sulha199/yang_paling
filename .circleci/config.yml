@@ -6,7 +6,7 @@ workflows:
       - deploy:
           requires:
             - unit_test
-      - store_artefact
+      - store_artefact:
           requires:
             - unit_test
 jobs:
@@ -75,15 +75,15 @@ jobs:
             # Push quietly to prevent showing the token in log
             git push -q
   store_artefact:
-      docker:
-        - image: circleci/node:10.16.3-stretch-browsers
-          environment:
-            CHROME_BIN: "/usr/bin/google-chrome"
-      working_directory: ~/repo
-      steps:
-        - restore_cache: # special step to restore the deploy cache
-          name: restore coverage-cache-{{ .Branch }}-{{ .Revision }}
-          key: coverage-cache-{{ .Branch }}-{{ .Revision }}
-        - store_artifacts:
-          path: ~/repo/coverage
-          destination: coverage
+    docker:
+      - image: circleci/node:10.16.3-stretch-browsers
+        environment:
+          CHROME_BIN: "/usr/bin/google-chrome"
+    working_directory: ~/repo
+    steps:
+      - restore_cache: # special step to restore the deploy cache
+        name: restore coverage-cache-{{ .Branch }}-{{ .Revision }}
+        key: coverage-cache-{{ .Branch }}-{{ .Revision }}
+      - store_artifacts:
+        path: ~/repo/coverage
+        destination: coverage
