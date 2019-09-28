@@ -26,8 +26,8 @@ jobs:
       - run: npm test -- --watch=false --no-progress
       - run: npm run build -- --no-progress --prod --base-href="https://sulha199.github.io/yang_paling/${CIRCLE_BRANCH}/"
       - save_cache: # special step to save the dist cache
-          name: save dependency-cache-${CIRCLE_BRANCH}
-          key: dependency-cache-${CIRCLE_BRANCH}
+          name: save deploy-cache-{{ .Branch }}-{{ .Revision }}
+          key: deploy-cache-{{ .Branch }}-{{ .Revision }}
           paths:
             - ~/repo/dist
       - run: ls
@@ -39,8 +39,8 @@ jobs:
     working_directory: ~/repo
     steps:
       - restore_cache: # special step to restore the deploy cache
-          name: restore dependency-cache-${CIRCLE_BRANCH}
-          key: dependency-cache-${CIRCLE_BRANCH}
+          name: restore deploy-cache-{{ .Branch }}-{{ .Revision }}
+          key: deploy-cache-{{ .Branch }}-{{ .Revision }}
       - add_ssh_keys:
           fingerprints:
             - "a5:a6:8b:1e:ff:a6:d5:f7:03:fa:75:a3:14:68:f4:d3"
