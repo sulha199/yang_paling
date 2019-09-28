@@ -2,12 +2,15 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build
+      - unit_test
       - deploy:
           requires:
-            - build
+            - unit_test
+      - store_artefact
+          requires:
+            - unit_test
 jobs:
-  build:
+  unit_test:
     docker:
       - image: circleci/node:10.16.3-stretch-browsers
         environment:
@@ -24,12 +27,11 @@ jobs:
           paths:
             - ./node_modules
       - run: npm test -- --watch=false --no-progress
-      - run: npm run build -- --no-progress --prod --base-href="https://sulha199.github.io/yang_paling/${CIRCLE_BRANCH}/"
       - save_cache: # special step to save the dist cache
-          name: save deploy-cache-{{ .Branch }}-{{ .Revision }}
-          key: deploy-cache-{{ .Branch }}-{{ .Revision }}
+          name: save coverage-cache-{{ .Branch }}-{{ .Revision }}
+          key: coverage-cache-{{ .Branch }}-{{ .Revision }}
           paths:
-            - ~/repo/dist
+            - ~/repo/coverage
       - run: ls
   deploy:
     docker:
@@ -38,9 +40,12 @@ jobs:
           CHROME_BIN: "/usr/bin/google-chrome"
     working_directory: ~/repo
     steps:
-      - restore_cache: # special step to restore the deploy cache
-          name: restore deploy-cache-{{ .Branch }}-{{ .Revision }}
-          key: deploy-cache-{{ .Branch }}-{{ .Revision }}
+      # Checkout the code from the branch into the working_directory-
+      - checkout:
+      - restore_cache: # special step to restore the dependency cache
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm install
+      - run: npm run build -- --no-progress --prod --base-href="https://sulha199.github.io/yang_paling/${CIRCLE_BRANCH}/"
       - add_ssh_keys:
           fingerprints:
             - "a5:a6:8b:1e:ff:a6:d5:f7:03:fa:75:a3:14:68:f4:d3"
@@ -50,15 +55,13 @@ jobs:
           command: |
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
             git clone -b gh-pages $CIRCLE_REPOSITORY_URL .
-      - run: ls -la ~/.ssh/
-      - run: ls
       - run:
           name: delete folder with current branch name if exist
           command: rm -rf ~/repo/deploy/${CIRCLE_BRANCH} && ls ~/repo/deploy/
-      - run: mkdir ~/repo/deploy/${CIRCLE_BRANCH}
+      - run: mkdir ~/repo/deploy/${CIRCLE_BRANCH} && ls ~/repo/deploy/
       - run:
           name: move build result to deploy folder with branch-name
-          command: mv ./dist/* ~/repo/deploy/${CIRCLE_BRANCH} -i && ls ~/repo/deploy/
+          command: mv ./dist/* ~/repo/deploy/${CIRCLE_BRANCH} -i && ls ~/repo/deploy/${CIRCLE_BRANCH}
       - deploy:
           name: Trigger commit and push
           working_directory: ~/repo/deploy
@@ -71,3 +74,16 @@ jobs:
             git commit --allow-empty -m "commited by CI [skip ci]"
             # Push quietly to prevent showing the token in log
             git push -q
+  store_artefact:
+      docker:
+        - image: circleci/node:10.16.3-stretch-browsers
+          environment:
+            CHROME_BIN: "/usr/bin/google-chrome"
+      working_directory: ~/repo
+      steps:
+        - restore_cache: # special step to restore the deploy cache
+          name: restore coverage-cache-{{ .Branch }}-{{ .Revision }}
+          key: coverage-cache-{{ .Branch }}-{{ .Revision }}
+        - store_artifacts:
+          path: ~/repo/coverage
+          destination: coverage
