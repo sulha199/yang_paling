@@ -1,9 +1,7 @@
-:host {
-  max-height: calc(100vh - 72px);
-}
+@import '../../../scss/variable.scss';
 
 .filters {
-  margin: 5px 0;
+  padding: 5px 0;
   .marketplaces {
 
   }
@@ -12,7 +10,7 @@
 .product-results {
   display: flex;
   flex-flow: row wrap;
-  height: calc(100%);
+  height: calc(100% - #{$header-height + 8}px);
   overflow: auto;
   padding-bottom: 5px;
 }
