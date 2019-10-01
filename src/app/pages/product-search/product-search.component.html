@@ -10,6 +10,7 @@
   <ng-container *ngFor="let item of (productResults$ | async).showedResults" >
     <app-product-card [item]="item"></app-product-card>
   </ng-container>
+  <button (click)="next()">Next</button>
 </div>
 
 

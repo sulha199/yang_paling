@@ -36,6 +36,7 @@ export class BukalapakProductSearch extends ProductSearchClassModel<string> {
   buildRequestUrl(params: ProductSearchParamsModel) {
     const url = 'https://still-lowlands-56721.herokuapp.com/api/bl';
     const urlParams = new HttpParams()
+      .set('page', (params.pageNumber + 1).toString())
       .set('search[keywords]', params.text)
       .set('search[sort_by]', this.sortOptions[params.sortBy])
       .set('search[price_min]', params.priceMin.toString())

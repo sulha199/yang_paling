@@ -11,6 +11,7 @@ export interface ProductSearchFilter {
 export interface ProductSearchStateModel {
   searchValue: ProductSearchParamsModel;
   results: ProductSearchResultModel[];
+  resultMap: Record<string, Array<ProductSearchResultModel[]>>;
   showedResults: ProductSearchResultModel[];
   sourceStates: boolean[];
   filter: ProductSearchFilter;
@@ -81,5 +82,7 @@ export const DEFAULT_PRODUCT_SEARCH_STATE = {
     priceMax: 9999999999
   },
   results: [],
+  showedResults: [],
+  resultMap: {}
 } as ProductSearchStateModel;
 

@@ -23,6 +23,7 @@ export class TokopediaProductSearch extends ProductSearchClassModel<TokopediaPro
     const url = 'https://still-lowlands-56721.herokuapp.com/api/tp';
     const urlParams = new HttpParams().append('keywords', params.text)
       .append('st', 'product')
+      .append('page', (params.pageNumber + 1).toString())
       .append('image_size', '100')
       .append('image_square', 'true')
       .append('q', params.text)

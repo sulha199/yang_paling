@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ProductSearchState } from 'src/app/core/ngxs/states/productSearch.State';
 import { Observable } from 'rxjs';
 import { ProductSearchStateModel } from 'src/app/core/model/marketplace/productSearch.model';
-import { SearchUpdateFilterMarketPlace } from 'src/app/core/ngxs/actions/productSearch.actions';
+import { SearchUpdateFilterMarketPlace, SearchNextPage } from 'src/app/core/ngxs/actions/productSearch.actions';
 import { MarketPlaceModel } from 'src/app/core/model/marketplace';
 import { MarketplaceService } from 'src/app/core/services/marketplace/marketplace.service';
 import { MarketplaceFilterComponent } from 'src/app/shared/components/marketplace-filter/marketplace-filter.component';
@@ -33,5 +33,9 @@ export class ProductSearchComponent implements OnInit {
 
   updateMarketPlaceFilter(value: Record<string, boolean>) {
     this.store.dispatch(new SearchUpdateFilterMarketPlace(value));
+  }
+
+  next() {
+    this.store.dispatch(new SearchNextPage());
   }
 }
