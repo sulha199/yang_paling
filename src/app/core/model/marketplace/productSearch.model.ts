@@ -15,6 +15,7 @@ export interface ProductSearchStateModel {
   showedResults: ProductSearchResultModel[];
   sourceStates: boolean[];
   filter: ProductSearchFilter;
+  status: 'normal' | 'requesting' | 'receiving' | 'end-of-result';
 }
 
 export interface ProductSearchParamsModel {
@@ -83,6 +84,7 @@ export const DEFAULT_PRODUCT_SEARCH_STATE = {
   },
   results: [],
   showedResults: [],
-  resultMap: {}
+  resultMap: {},
+  status: 'normal',
 } as ProductSearchStateModel;
 

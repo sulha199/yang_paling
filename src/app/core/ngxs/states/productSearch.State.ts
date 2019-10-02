@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs/index';
 import { MarketplaceService } from './../../services/marketplace/marketplace.service';
 // tslint:disable-next-line:max-line-length
 import { ProductSearchStateModel, DEFAULT_PRODUCT_SEARCH_STATE, ProductSearchParamsModel, ProductSearchResultModel, ProductSearchFilter, SortBy } from 'src/app/core/model/marketplace/productSearch.model';
@@ -9,7 +10,6 @@ import { Router } from '@angular/router';
 import { AppRoutesList } from 'src/app/app-routing.module';
 import { forkJoin } from 'rxjs';
 import { AppStatesType, AppState } from '../model';
-import { stat } from 'fs';
 const combinePagination = require('combine-pagination').default;
 
 @State<ProductSearchStateModel>({
@@ -48,15 +48,17 @@ export class ProductSearchState {
   start(ctx: StateContext<ProductSearchStateModel>, action: SearchStart) {
     this.reset(ctx);
     this.router.navigate([AppRoutesList.productSearch]);
-    const state: ProductSearchStateModel = { ...ctx.getState(), searchValue: action.searchValue};
-    forkJoin(this.createSearchObservables(state).map(search => search.pipe(
+    const state: ProductSearchStateModel = { ...ctx.getState(), searchValue: action.searchValue, status: 'requesting'};
+    const searchMap = this.createSearchObservables(state);
+    forkJoin(Object.keys(searchMap).map(marketplaceName => searchMap[marketplaceName].pipe(
       tap(rows => {
         if (!!rows[0]) {
-          state.resultMap[rows[0].origin] = [ rows ];
+          state.resultMap[marketplaceName] = [ rows ];
+          state.status = 'receiving';
           ctx.setState(state);
         }
       })
-    ))).subscribe(arrayOfRows => {
+    ))).subscribe(() => {
       this.paginationCombiner = this.createPaginationCombiner(this.store, state.searchValue);
       this.loadPaginationCombiner(ctx);
     });
@@ -69,6 +71,7 @@ export class ProductSearchState {
       results: [],
       resultMap: {},
       showedResults: [],
+      status: 'normal',
     });
   }
 
@@ -87,7 +90,8 @@ export class ProductSearchState {
   nextPage(ctx: StateContext<ProductSearchStateModel>) {
     const state = ctx.getState();
     state.searchValue.pageNumber++;
-    forkJoin(this.createSearchObservables(state).map(search => search.pipe(
+    const searchMap = this.createSearchObservables(state);
+    forkJoin(Object.keys(searchMap).map(marketplaceName => searchMap[marketplaceName].pipe(
       tap(rows => {
         if (!!rows[0]) {
           state.resultMap[rows[0].origin][state.searchValue.pageNumber] = rows;
@@ -115,14 +119,17 @@ export class ProductSearchState {
   //   ctx.dispatch(new SearchStart(searchValue));
   // }
 
-  createSearchObservables(state: ProductSearchStateModel) {
-    const results$ = this.marketplaceService.productSearchMembers.map(
-      marketplace => marketplace.productSearch.productSearch(state.searchValue).pipe(
-        map(results => results.map(result => ({ ...result, origin: marketplace.basicInfo.name} as ProductSearchResultModel))),
-        shareReplay(1)
-      )
-    );
-    return results$;
+  createSearchObservables(state: ProductSearchStateModel): Record<string, Observable<ProductSearchResultModel[]>> {
+    const resultMap = {};
+    this.marketplaceService.productSearchMembers.forEach(marketplace => {
+      if (state.searchValue.pageNumber === 0 || this.isPreviousResultMapFull(marketplace.basicInfo.name, state)) {
+        resultMap[marketplace.basicInfo.name] = marketplace.productSearch.productSearch(state.searchValue).pipe(
+          map(results => results.map(result => ({ ...result, origin: marketplace.basicInfo.name} as ProductSearchResultModel))),
+          shareReplay(1)
+        );
+      }
+    });
+    return resultMap;
   }
 
   filterResults(filter: ProductSearchFilter, rows: ProductSearchResultModel[]) {
@@ -163,7 +170,14 @@ export class ProductSearchState {
       ctx.patchState({
         results,
         showedResults: this.filterResults(state.filter, results),
+        status: (rows.length > 0) ? 'normal' : 'end-of-result',
       });
     });
+  }
+
+  isPreviousResultMapFull(marketplaceName: string, state: ProductSearchStateModel): boolean {
+    return !!state.resultMap[marketplaceName]
+      && !!state.resultMap[marketplaceName][state.searchValue.pageNumber - 1]
+      && state.resultMap[marketplaceName][state.searchValue.pageNumber - 1].length === state.searchValue.perPage;
   }
 }
