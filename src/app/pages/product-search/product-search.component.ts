@@ -7,6 +7,7 @@ import { SearchUpdateFilterMarketPlace, SearchNextPage } from 'src/app/core/ngxs
 import { MarketPlaceModel } from 'src/app/core/model/marketplace';
 import { MarketplaceService } from 'src/app/core/services/marketplace/marketplace.service';
 import { MarketplaceFilterComponent } from 'src/app/shared/components/marketplace-filter/marketplace-filter.component';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-product-search',
@@ -19,6 +20,7 @@ export class ProductSearchComponent implements OnInit {
   @ViewChild('marketplaceFilter', { static: true}) marketplaceFilter: MarketplaceFilterComponent;
 
   members: MarketPlaceModel[];
+  isLoadingResult$: Observable<boolean>;
   searchingStatusCallback = (marketplace: MarketPlaceModel) => marketplace.productSearch.isProcessing$;
 
   constructor(
@@ -29,6 +31,7 @@ export class ProductSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.isLoadingResult$ = this.productResults$.pipe(map(state => state.status === 'receiving' || state.status === 'requesting'));
   }
 
   updateMarketPlaceFilter(value: Record<string, boolean>) {

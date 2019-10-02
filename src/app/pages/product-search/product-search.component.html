@@ -10,7 +10,10 @@
   <ng-container *ngFor="let item of (productResults$ | async).showedResults" >
     <app-product-card [item]="item"></app-product-card>
   </ng-container>
-  <button (click)="next()">Next</button>
+
+  <button (click)="next()" *ngIf="!(isLoadingResult$ | async); else loader" >Next</button>
+  <app-marketplace-icon-bouncing [marketplaces]="members" [getProgressCallback]="searchingStatusCallback"></app-marketplace-icon-bouncing>
+  <ng-template #loader></ng-template>
 </div>
 
 
