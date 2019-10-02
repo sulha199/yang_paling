@@ -3,3 +3,117 @@
   align-items: center;
   flex-direction: row;
 }
+
+@mixin bouncing_icon {
+  .bouncing-icon {
+    display: inline-block;
+    position: relative;
+    &:nth-child(odd) {
+      -moz-animation: bounce-odd 0.5s infinite linear;
+      -o-animation: bounce-odd 0.5s infinite linear;
+      -webkit-animation: bounce-odd 0.5s infinite linear;
+      animation: bounce-odd 0.5s infinite linear;
+    }
+    &:nth-child(even) {
+      -moz-animation: bounce-even 0.5s infinite .5s linear;
+      -o-animation: bounce-even 0.5s infinite .5s linear;
+      -webkit-animation: bounce-even 0.5s infinite .5s linear;
+      animation: bounce-even 0.5s infinite .5s linear;
+    }
+  }
+
+  /* odd*/
+  @-webkit-keyframes bounce-odd {
+      0% { top: 0; }
+      50% { top: -0.2em; }
+      70% { top: -0.3em; }
+      100% { top: 0; }
+  }
+  @-moz-keyframes bounce-odd {
+      0% { top: 0; }
+      50% { top: -0.2em; }
+      70% { top: -0.3em; }
+      100% { top: 0; }
+  }
+  @-o-keyframes bounce-odd {
+      0% { top: 0; }
+      50% { top: -0.2em; }
+      70% { top: -0.3em; }
+      100% { top: 0; }
+  }
+  @-ms-keyframes bounce-odd {
+      0% { top: 0; }
+      50% { top: -0.2em; }
+      70% { top: -0.3em; }
+      100% { top: 0; }
+  }
+  @keyframes bounce-odd {
+      0% { top: 0; }
+      50% { top: -0.2em; }
+      70% { top: -0.3em; }
+      100% { top: 0; }
+  }
+
+  @-webkit-keyframes bounce-odd {
+      0% { top: 0; }
+      50% { top: -0.2em; }
+      70% { top: -0.3em; }
+      100% { top: 0; }
+  }
+  @-moz-keyframes bounce-odd {
+      0% { top: 0; }
+      50% { top: -0.2em; }
+      70% { top: -0.3em; }
+      100% { top: 0; }
+  }
+  @-o-keyframes bounce-odd {
+      0% { top: 0; }
+      50% { top: -0.2em; }
+      70% { top: -0.3em; }
+      100% { top: 0; }
+  }
+  @-ms-keyframes bounce-odd {
+      0% { top: 0; }
+      50% { top: -0.2em; }
+      70% { top: -0.3em; }
+      100% { top: 0; }
+  }
+  @keyframes bounce-odd {
+      0% { top: 0; }
+      50% { top: -0.2em; }
+      70% { top: -0.3em; }
+      100% { top: 0; }
+  }
+
+  /* even */
+  @-webkit-keyframes bounce-even {
+    0% { top: -0.2em; }
+    50% { top: 0; }
+    70% { top: 0; }
+    100% { top: -0.3em; }
+  }
+  @-moz-keyframes bounce-even {
+    0% { top: -0.2em; }
+    50% { top: 0; }
+    70% { top: 0; }
+    100% { top: -0.3em; }
+  }
+  @-o-keyframes bounce-even {
+    0% { top: -0.2em; }
+    50% { top: 0; }
+    70% { top: 0; }
+    100% { top: -0.3em; }
+  }
+  @-ms-keyframes bounce-even {
+    0% { top: -0.2em; }
+    50% { top: 0; }
+    70% { top: 0; }
+    100% { top: -0.3em; }
+  }
+  @keyframes bounce-even {
+    0% { top: -0.2em; }
+    50% { top: 0; }
+    70% { top: 0; }
+    100% { top: -0.3em; }
+  }
+}
