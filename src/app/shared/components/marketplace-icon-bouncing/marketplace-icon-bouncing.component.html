@@ -1,13 +1,12 @@
 <div class="marketplace-icon-bouncing">
-  <div class="bouncing-icon"><mat-icon>brightness_1</mat-icon></div>
+  <div class="bouncing-icon" *ngIf="isShowDots$ | async"><mat-icon>brightness_1</mat-icon></div>
   <ng-container *ngFor="let marketplace of marketplaces" >
-    <div class="bouncing-icon" *ngIf="!!(isInProgressStates$[marketplace] | async)" >
+    <div class="bouncing-icon" *ngIf="!!(isInProgressStates$[marketplace.basicInfo.name] | async)" >
       <img class="main-icon"
             [src]="'./' + marketplace.basicInfo.logo"
             [alt]="marketplace.basicInfo.name"
             [style.background-color]="marketplace.basicInfo.mainColor">
     </div>
   </ng-container>
-
-  <div class="bouncing-icon"><mat-icon>brightness_1</mat-icon></div>
+  <div class="bouncing-icon" *ngIf="isShowDots$ | async"><mat-icon>brightness_1</mat-icon></div>
 </div>
