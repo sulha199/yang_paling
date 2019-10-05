@@ -1,4 +1,7 @@
-<mat-card class="product-card" (click)="openIframe()" [style.border-bottom]="'4px solid ' + marketplaceRecords[item.origin].mainColor">
+<mat-card class="product-card"
+  (click)="openIframe()"
+  [style.border-bottom]="'4px solid ' + marketplaceRecords[item.origin].mainColor"
+  [style.width]="customWidth">
   <img mat-card-image [src]="item.thumbnail" />
   <mat-card-title>{{ item.title }}</mat-card-title>
   <mat-card-title>
