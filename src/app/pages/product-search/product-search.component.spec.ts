@@ -9,9 +9,12 @@ import { ProductCardComponent } from 'src/app/shared/components/product-card/pro
 import { MatCardModule } from '@angular/material';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ProductSearchResultModel } from 'src/app/core/model/marketplace/productSearch.model';
-import { SearchUpdateFilterMarketPlace } from 'src/app/core/ngxs/actions/productSearch.actions';
+import { of, BehaviorSubject } from 'rxjs';
+import { ProductSearchResultModel, ProductSearchStateModel, DEFAULT_PRODUCT_SEARCH_STATE } from 'src/app/core/model/marketplace/productSearch.model';
+import { SearchUpdateFilterMarketPlace, SearchNextPage } from 'src/app/core/ngxs/actions/productSearch.actions';
+import { MarketplaceIconBouncingComponent } from 'src/app/shared/components/marketplace-icon-bouncing/marketplace-icon-bouncing.component';
+import { MaterialModule } from 'src/app/shared/modules/material.module';
+import { By } from 'selenium-webdriver';
 
 const mockProducts: ProductSearchResultModel[] = [
   {
@@ -34,7 +37,12 @@ describe('ProductSearchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProductSearchComponent, MarketplaceFilterComponent, ProductCardComponent ],
+      declarations: [
+        ProductSearchComponent,
+        MarketplaceFilterComponent,
+        ProductCardComponent,
+        MarketplaceIconBouncingComponent
+      ],
       providers: [
         MarketplaceService,
         {
@@ -45,7 +53,8 @@ describe('ProductSearchComponent', () => {
       imports: [
         NgxsModule.forRoot([ProductSearchState]),
         MatCardModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        MaterialModule,
       ]
     })
     .compileComponents();
@@ -55,7 +64,7 @@ describe('ProductSearchComponent', () => {
     fixture = TestBed.createComponent(ProductSearchComponent);
     component = fixture.componentInstance;
     store = TestBed.get(Store);
-    spyOn(store, 'select').and.returnValue(of({ showedResults: mockProducts }));
+    spyOn(store, 'select').and.returnValue(of({ showedResults: mockProducts, state: 'normal' }));
     spyOn(store, 'dispatch');
     fixture.detectChanges();
   });
@@ -71,5 +80,23 @@ describe('ProductSearchComponent', () => {
     fixture.detectChanges();
 
     expect(store.dispatch).toHaveBeenCalledWith(new SearchUpdateFilterMarketPlace(mockMarketFIlter));
+  }));
+
+  it('should load next page', fakeAsync(() => {
+    const mockState: ProductSearchStateModel = {
+      ...DEFAULT_PRODUCT_SEARCH_STATE,
+      showedResults: mockProducts,
+      status: 'normal',
+    };
+    const mockStore = new BehaviorSubject<ProductSearchStateModel>(mockState);
+    spyOnProperty(component, 'productResults$').and.returnValue(mockStore);
+    component.productListRef.nativeElement.style.height = '10px';
+    fixture.detectChanges();
+    component.productListRef.nativeElement.scrollTop = 1000;
+    fixture.detectChanges();
+
+    component.next();
+    mockStore.next(mockState);
+    expect(store.dispatch).toHaveBeenCalledWith(new SearchNextPage());
   }));
 });

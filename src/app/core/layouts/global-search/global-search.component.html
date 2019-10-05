@@ -1,6 +1,5 @@
 <mat-form-field class="container" [floatLabel]="'never'">
   <mat-icon #icon matPrefix (click)="search()">search</mat-icon>
-  <span matPrefix>Cari</span>
   <input #input
     [(ngModel)]="searchValue"
     type="text"
@@ -8,9 +7,12 @@
     (focus)="focus()"
     (blur)="blur()"
     (keydown.enter)="search()"
-    [placeholder]="'apa ya..'" />
-  <span matSuffix [class.hidden]="!(isOptionsVisible$ | async)">yang-paling-</span>
-  <mat-select #sortBy [(value)]="sortValue" matSuffix [class.hidden]="!(isOptionsVisible$ | async)">
+    [placeholder]="'ayo cari...'" />
+  <span matSuffix [class.hidden]="!(isOptionsVisible$ | async)">-paling-</span>
+  <mat-select #sortBy matSuffix
+    [(value)]="sortValue"
+    [class.hidden]="!(isOptionsVisible$ | async)"
+    (selectionChange)="search()">
     <ng-container *ngFor="let option of sortOptions">
       <mat-option [value]="option.key">{{ option.label }}</mat-option>
     </ng-container>

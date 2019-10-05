@@ -1,22 +1,38 @@
+import { Observable } from 'rxjs/index';
 import { MarketplaceService } from './../../services/marketplace/marketplace.service';
 // tslint:disable-next-line:max-line-length
 import { ProductSearchStateModel, DEFAULT_PRODUCT_SEARCH_STATE, ProductSearchParamsModel, ProductSearchResultModel, ProductSearchFilter, SortBy } from 'src/app/core/model/marketplace/productSearch.model';
-import { State, Action, StateContext, Selector } from '@ngxs/store';
+import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
 // tslint:disable-next-line:max-line-length
-import { SearchStart, SearchReset, SearchUpdateSortBy, SearchUpdatePriceRange, SearchUpdateFilterMarketPlace } from '../actions/productSearch.actions';
-import { map, take } from 'rxjs/operators';
+import { SearchStart, SearchReset, SearchUpdateSortBy, SearchUpdatePriceRange, SearchUpdateFilterMarketPlace, SearchNextPage } from '../actions/productSearch.actions';
+import { map, take, shareReplay, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AppRoutesList } from 'src/app/app-routing.module';
-import { MarketPlaceModel } from '../../model/marketplace';
+import { forkJoin } from 'rxjs';
+import { AppStatesType, AppState } from '../model';
+const combinePagination = require('combine-pagination').default;
 
 @State<ProductSearchStateModel>({
-  name: 'productSearch',
+  name: AppStatesType.productSearch,
   defaults: DEFAULT_PRODUCT_SEARCH_STATE
 })
 export class ProductSearchState {
+  readonly sortingMap: Record<string, { sortKey: 'price' | 'rating', sortDirection: 'asc' | 'desc' }> = {
+    [SortBy.priceAsc]: { sortKey: 'price', sortDirection: 'asc' },
+    [SortBy.priceDesc]: { sortKey: 'price', sortDirection: 'desc'},
+    [SortBy.rating]: { sortKey: 'rating', sortDirection: 'desc' }
+  };
+  // sortingCallbacks: Record<string, any> = {
+  //   [SortBy.priceAsc]: (a: ProductSearchResultModel, b: ProductSearchResultModel) => a.price - b.price,
+  //   [SortBy.priceDesc]: (a: ProductSearchResultModel, b: ProductSearchResultModel) => b.price - a.price,
+  //   [SortBy.rating]: (a: ProductSearchResultModel, b: ProductSearchResultModel) => b.rating - a.rating,
+  // };
+  paginationCombiner: any;
+
   constructor(
     private marketplaceService: MarketplaceService,
-    private router: Router
+    private router: Router,
+    private store: Store,
   ) {}
 
   ngxsOnInit(ctx: StateContext<ProductSearchStateModel>) {
@@ -35,43 +51,77 @@ export class ProductSearchState {
 
   @Action(SearchStart)
   start(ctx: StateContext<ProductSearchStateModel>, action: SearchStart) {
-    const state  = {
+    this.reset(ctx);
+    this.router.navigate([AppRoutesList.productSearch]);
+    const state: ProductSearchStateModel = {
       ...ctx.getState(),
-      searchValue: { ...DEFAULT_PRODUCT_SEARCH_STATE.searchValue, ...action.searchValue},
-      result: [],
-      showedResults: []
+      searchValue: action.searchValue,
+      status: 'requesting',
     };
     ctx.setState(state);
-    this.router.navigate([AppRoutesList.productSearch]);
-    let results: ProductSearchResultModel[] = [];
-    this.createSearchObservables(state).map(search => search.subscribe(result => {
-      results = results.concat(result);
-      results = this.sortResults(state.searchValue.sortBy, results);
-      ctx.setState({
-        ...state,
-        results,
-        showedResults: this.filterResults(state.filter, results)
-      });
-    }));
+    const searchMap = this.createSearchObservables(state);
+    forkJoin(Object.keys(searchMap).map(marketplaceName => searchMap[marketplaceName].pipe(
+      tap(rows => {
+        if (!!rows[0]) {
+          state.resultMap[marketplaceName] = [ rows ];
+          state.status = 'receiving';
+          ctx.setState(state);
+        }
+      })
+    ))).subscribe(rows => {
+      this.paginationCombiner = this.createPaginationCombiner(this.store, state.searchValue);
+      this.loadPaginationCombiner(ctx);
+    });
   }
 
   @Action(SearchReset)
-  reset(ctx: StateContext<ProductSearchStateModel>, action: SearchReset) {
+  reset(ctx: StateContext<ProductSearchStateModel>) {
     ctx.setState({
       ...ctx.getState(),
       results: [],
+      resultMap: {},
       showedResults: [],
+      status: 'normal',
     });
   }
 
   @Action(SearchUpdateFilterMarketPlace)
   updateFilterMarketPlace(ctx: StateContext<ProductSearchStateModel>, action: SearchUpdateFilterMarketPlace) {
-    const state = ctx.getState();
+    let state = ctx.getState();
     const filter: ProductSearchFilter = { ...state.filter, marketplaces: action.records };
-    ctx.setState({
+    this.paginationCombiner = this.createPaginationCombiner(this.store, state.searchValue);
+    state = {
       ...state,
+      status: 'receiving',
+      searchValue: { ...state.searchValue, pageNumber: 0},
       filter,
-      showedResults: this.filterResults(filter, state.results)
+      showedResults: [],
+      results: [],
+    };
+    ctx.setState(state);
+    this.loadPaginationCombiner(ctx);
+  }
+
+  @Action(SearchNextPage)
+  nextPage(ctx: StateContext<ProductSearchStateModel>) {
+    const state = ctx.getState();
+    state.searchValue.pageNumber++;
+    state.status = 'requesting';
+    ctx.setState(state);
+    if (Object.values(state.resultMap).every(maps => maps[state.searchValue.pageNumber])) {
+      return this.loadPaginationCombiner(ctx);
+    }
+    const searchMap = this.createSearchObservables(state);
+    forkJoin(Object.keys(searchMap).map(marketplaceName => searchMap[marketplaceName].pipe(
+      tap(rows => {
+        if (!!rows[0]) {
+          state.resultMap[rows[0].origin][state.searchValue.pageNumber] = rows;
+          state.status = 'receiving';
+          ctx.setState(state);
+        }
+      })
+    ))).subscribe(() => {
+      this.loadPaginationCombiner(ctx);
     });
   }
 
@@ -91,29 +141,62 @@ export class ProductSearchState {
   //   ctx.dispatch(new SearchStart(searchValue));
   // }
 
-  createSearchObservables(state: ProductSearchStateModel) {
-    const results$ = this.marketplaceService.productSearchMembers.map(
-      marketplace => marketplace.productSearch.productSearch(state.searchValue).pipe(
-        map(results => results.map(result => ({ ...result, origin: marketplace.basicInfo.name} as ProductSearchResultModel)))
-      )
-    );
-    return results$;
+  createSearchObservables(state: ProductSearchStateModel): Record<string, Observable<ProductSearchResultModel[]>> {
+    const resultMap = {};
+    this.marketplaceService.productSearchMembers.forEach(marketplace => {
+      if (state.searchValue.pageNumber === 0 || this.isPreviousResultMapFull(marketplace.basicInfo.name, state)) {
+        resultMap[marketplace.basicInfo.name] = marketplace.productSearch.productSearch(state.searchValue).pipe(
+          map(results => results.map(result => ({ ...result, origin: marketplace.basicInfo.name} as ProductSearchResultModel))),
+          shareReplay(1)
+        );
+      }
+    });
+    return resultMap;
   }
 
   filterResults(filter: ProductSearchFilter, rows: ProductSearchResultModel[]) {
     return rows.filter(row => filter.marketplaces[row.origin]);
   }
 
-  sortResults(sortBy: SortBy, rows: ProductSearchResultModel[]): ProductSearchResultModel[] {
-    switch (sortBy) {
-      case SortBy.priceAsc:
-        return rows.sort((a, b) => a.price - b.price);
-      case SortBy.priceDesc:
-        return rows.sort((a, b) => b.price - a.price);
-      case SortBy.rating:
-            return rows.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-      default:
-        return rows;
-    }
+  createPaginationCombiner(store: Store, params: ProductSearchParamsModel) {
+    const currentState = store.selectSnapshot((state: AppState) => state.productSearch);
+    const sorting = this.sortingMap[params.sortBy];
+    const getters = Object.keys(currentState.resultMap).map(marketplaceName => {
+      return (page: number) => {
+        const callbackState = store.selectSnapshot((state: AppState) => state.productSearch);
+        return callbackState.filter.marketplaces[marketplaceName] ? callbackState.resultMap[marketplaceName][page] : [];
+      };
+    });
+    return combinePagination({
+      getters,
+      sort: false, // not use manual sorting
+      sortKey: sorting.sortKey,
+      sortDirection: sorting.sortDirection
+    });
+  }
+
+
+  loadPaginationCombiner(ctx: StateContext<ProductSearchStateModel>) {
+    this.paginationCombiner.getNext().then((rows: ProductSearchResultModel[]) => {
+      const state = ctx.getState();
+      const results = state.results.concat(rows);
+      state.status = rows.length === 0
+        ? 'no-result'
+        : Object.values(state.resultMap).every(
+            marketResult => marketResult[state.searchValue.pageNumber].length < state.searchValue.perPage
+          )
+            ? 'end-of-result' : 'normal';
+      ctx.patchState({
+        results,
+        showedResults: this.filterResults(state.filter, results),
+        status: state.status,
+      });
+    });
+  }
+
+  isPreviousResultMapFull(marketplaceName: string, state: ProductSearchStateModel): boolean {
+    return !!state.resultMap[marketplaceName]
+      && !!state.resultMap[marketplaceName][state.searchValue.pageNumber - 1]
+      && state.resultMap[marketplaceName][state.searchValue.pageNumber - 1].length === state.searchValue.perPage;
   }
 }

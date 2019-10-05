@@ -11,6 +11,7 @@ import { MARKETPLACES_RECORDS } from 'src/app/core/model/marketplace';
 })
 export class ProductCardComponent implements OnInit {
   @Input() item: ProductSearchResultModel;
+  @Input() customWidth = '170px';
   scaledRating: number;
 
   readonly marketplaceRecords = MARKETPLACES_RECORDS;

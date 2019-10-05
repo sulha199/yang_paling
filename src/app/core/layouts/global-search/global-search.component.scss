@@ -7,6 +7,7 @@ app-global-search {
     color: $text-normal-color;
     border-radius: $border-radius-small;
     width: 100%;
+    max-width: calc(100vw - 30px);
   }
 
   .hidden {
@@ -20,41 +21,45 @@ app-global-search {
     .mat-form-field-underline {
       display: none;
     }
-  }
 
-  .mat-form-field-prefix {
-    @include flexbox_horizontal;
-    padding-right: .25rem;
-    cursor: pointer;
-  }
-
-  .mat-form-field-infix {
-    width: auto;
-    flex: 0 1 auto;
-    border: 0;
-    input {
-      font-weight: bold;
-      width: auto;
+    .mat-form-field-prefix {
+      @include flexbox_horizontal;
+      padding: 0.25rem;
+      cursor: pointer;
+      background-color: #eee;
+      margin: 0 .5em 0 0;
+      align-self: stretch;
     }
-  }
 
-  .mat-form-field-suffix {
-    flex: 0 0 130px;
-    @include flexbox_horizontal;
-  }
+    .mat-form-field-infix {
+      width: auto;
+      flex: 0 1 auto;
+      border: 0;
+      // padding: 0.4375em 0.5em;
+      input {
+        font-weight: bold;
+        width: auto;
+      }
+    }
 
-  .mat-focused .mat-form-field-label-wrapper {
-    color: transparent;
-  }
-  .mat-form-field-flex {
-    @include flexbox_horizontal;
-  }
+    .mat-form-field-suffix {
+      flex: 0 0 130px;
+      @include flexbox_horizontal;
+    }
 
-  .mat-select-value-text {
-    font-weight: bold;
-  }
+    .mat-focused .mat-form-field-label-wrapper {
+      color: transparent;
+    }
+    .mat-form-field-flex {
+      @include flexbox_horizontal;
+    }
 
-  .input.mat-input-element {
-    margin: 0;
+    .mat-select-value-text {
+      font-weight: bold;
+    }
+
+    .input.mat-input-element {
+      margin: 0;
+    }
   }
 }

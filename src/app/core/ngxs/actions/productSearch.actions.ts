@@ -1,8 +1,15 @@
-import { ProductSearchParamsModel, SortBy } from 'src/app/core/model/marketplace/productSearch.model';
+import { ProductSearchParamsModel, SortBy, DEFAULT_PRODUCT_SEARCH_STATE } from 'src/app/core/model/marketplace/productSearch.model';
 
 export class SearchStart {
   static readonly type = '[Product Search] start';
-  constructor(public searchValue: ProductSearchParamsModel) {}
+  constructor(public searchValue: ProductSearchParamsModel) {
+    this.searchValue = { ...DEFAULT_PRODUCT_SEARCH_STATE.searchValue, ...searchValue };
+  }
+}
+
+export class SearchNextPage {
+  static readonly type = '[Product Search] next page';
+  constructor() {}
 }
 
 export class SearchReset {

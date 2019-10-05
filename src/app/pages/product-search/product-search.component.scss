@@ -14,3 +14,25 @@
   overflow: auto;
   padding-bottom: 5px;
 }
+
+.product-tiles {
+  flex: 0 0 100%;
+  display: grid;
+  grid-column-gap: 5px;
+  grid-row-gap: 5px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  @media (min-width: 460px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  }
+}
+
+app-marketplace-icon-bouncing {
+  flex: 0 0 100%;
+}
+
+.no-result {
+  flex: 0 0 100%;
+}

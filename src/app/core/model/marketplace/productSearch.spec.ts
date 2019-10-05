@@ -4,9 +4,10 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TestBed, async, inject } from '@angular/core/testing';
 import { MARKETPLACES_RECORDS } from '.';
 import { MarketPlaceModel } from './marketPlace.model';
+import { forkJoin } from 'rxjs';
 
 const mockSearchParams: ProductSearchParamsModel = {
-  text: 'baju',
+  text: 'stroller bayi',
   pageNumber: 1,
   perPage: 20,
   priceMin: 0,
@@ -77,6 +78,23 @@ describe('Product Search from All MarketPlaces', () => {
         });
       });
 
+      it('should search on page 2 and 3 in correct sorting', done => {
+        const marketplace = getMarketPlaceByName(marketplaceName, marketplaceService);
+        mockSearchParams.sortBy = SortBy.priceAsc;
+        forkJoin(
+          marketplace.productSearch.productSearch({...mockSearchParams, pageNumber: 2}),
+          marketplace.productSearch.productSearch({...mockSearchParams, pageNumber: 3})
+        ).subscribe(([result2, result3]) => {
+          const results = result2.concat(result3);
+          expect(results.length).toBe(mockSearchParams.perPage * 2);
+          expect(
+            countKeywordIncludedInTitles(mockSearchParams.text, results) / mockSearchParams.perPage
+          ).toBeGreaterThan(keyworwordInclusionLimitRatio);
+          expect(isRowsOrderedByPrice(results, 'asc')).toBe(true);
+          done();
+        });
+      });
+
     });
   });
 
@@ -86,13 +104,17 @@ function getMarketPlaceByName(name: string, service: MarketplaceService): Market
   return service.productSearchMembers.find(marketplace => marketplace.basicInfo.name === name);
 }
 
-function countKeywordIncludedInTitles(keyword: string, results: ProductSearchResultModel[]): number {
-  return results.filter(row => row.title.toLowerCase().includes(keyword.toLowerCase())).length;
+function countKeywordIncludedInTitles(keywords: string, results: ProductSearchResultModel[]): number {
+  const keywordSplits = keywords.split(' ');
+  return keywordSplits.map(word =>
+    results.filter(row => row.title.toLowerCase().includes(word.toLowerCase())).length
+  ).reduce((acc, num) => acc + num);
 }
 
 function isRowsOrderedByPrice(results: ProductSearchResultModel[], sortingType: 'asc' | 'desc') {
   let previousValue = sortingType === 'asc' ? 0 : 9999999999;
   return results.every(row => {
+    row.price = Math.round(row.price);
     const compareResult = sortingType === 'asc' ? row.price >= previousValue : row.price <= previousValue;
     previousValue = row.price;
     return compareResult;
