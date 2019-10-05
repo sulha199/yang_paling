@@ -15,7 +15,7 @@ export interface ProductSearchStateModel {
   showedResults: ProductSearchResultModel[];
   sourceStates: boolean[];
   filter: ProductSearchFilter;
-  status: 'normal' | 'requesting' | 'receiving' | 'end-of-result';
+  status: 'normal' | 'requesting' | 'receiving' | 'end-of-result' | 'no-result';
 }
 
 export interface ProductSearchParamsModel {
