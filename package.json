@@ -24,7 +24,7 @@
     "@angular/platform-browser-dynamic": "~8.2.3",
     "@angular/router": "~8.2.3",
     "@ngxs/store": "^3.5.0",
-    "combine-pagination": "^0.3.2",
+    "combine-pagination": "git+https://github.com/sulha199/combine-pagination.git#quick-fix",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
@@ -36,7 +36,7 @@
     "@angular/language-service": "~8.2.3",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "^8.9.5",
+    "@types/node": "^8.10.54",
     "angular-cli-ghpages": "^0.6.0",
     "codelyzer": "^5.0.0",
     "jasmine-core": "~3.4.0",
