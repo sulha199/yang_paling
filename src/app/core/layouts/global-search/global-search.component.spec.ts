@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SearchStart } from '../../ngxs/actions/productSearch.actions';
 import { ProductSearchState } from '../../ngxs/states/productSearch.State';
 
-fdescribe('GlobalSearchComponent', () => {
+describe('GlobalSearchComponent', () => {
   let component: GlobalSearchComponent;
   let fixture: ComponentFixture<GlobalSearchComponent>;
   let store: Store;
