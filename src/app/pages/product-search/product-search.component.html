@@ -6,14 +6,19 @@
       (marketplacesStates)="updateMarketPlaceFilter($event)"></app-marketplace-filter>
   </div>
 </div>
-<div class="product-results">
-  <ng-container *ngFor="let item of (productResults$ | async).showedResults" >
-    <app-product-card [item]="item"></app-product-card>
-  </ng-container>
+<div class="product-results" (scroll)="next()" #productList>
+  <div class="product-tiles">
+    <ng-container *ngFor="let item of (productResults$ | async).showedResults" >
+      <app-product-card [item]="item" [customWidth]="'auto'"></app-product-card>
+    </ng-container>
+  </div>
 
-  <button (click)="next()" *ngIf="!(isLoadingResult$ | async); else loader" >Next</button>
-  <app-marketplace-icon-bouncing [marketplaces]="members" [getProgressCallback]="searchingStatusCallback"></app-marketplace-icon-bouncing>
-  <ng-template #loader></ng-template>
+  <app-marketplace-icon-bouncing
+    [marketplaces]="members"
+    [getProgressCallback]="searchingStatusCallback"></app-marketplace-icon-bouncing>
+
+  <div class="no-result" *ngIf="(isNoResult$ | async)">Product tidak ditemukan</div>
+  <div class="no-result" *ngIf="(isEndResult$ | async)">Tidak ada data lagi</div>
 </div>
 
 
