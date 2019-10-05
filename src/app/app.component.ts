@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.iframeUrl$ = this.iframe$.pipe(map(iframe => this.sanitizer.bypassSecurityTrustResourceUrl(iframe.url)));
-    this.store.dispatch(new SwitchDisplayMode(DISPLAY_MODE_SHOW_FEATURED));
+    // this.store.dispatch(new SwitchDisplayMode(DISPLAY_MODE_SHOW_FEATURED));
   }
 
   openIframe() {
