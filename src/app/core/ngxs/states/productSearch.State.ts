@@ -22,6 +22,11 @@ export class ProductSearchState {
     [SortBy.priceDesc]: { sortKey: 'price', sortDirection: 'desc'},
     [SortBy.rating]: { sortKey: 'rating', sortDirection: 'desc' }
   };
+  // sortingCallbacks: Record<string, any> = {
+  //   [SortBy.priceAsc]: (a: ProductSearchResultModel, b: ProductSearchResultModel) => a.price - b.price,
+  //   [SortBy.priceDesc]: (a: ProductSearchResultModel, b: ProductSearchResultModel) => b.price - a.price,
+  //   [SortBy.rating]: (a: ProductSearchResultModel, b: ProductSearchResultModel) => b.rating - a.rating,
+  // };
   paginationCombiner: any;
 
   constructor(
@@ -48,7 +53,12 @@ export class ProductSearchState {
   start(ctx: StateContext<ProductSearchStateModel>, action: SearchStart) {
     this.reset(ctx);
     this.router.navigate([AppRoutesList.productSearch]);
-    const state: ProductSearchStateModel = { ...ctx.getState(), searchValue: action.searchValue, status: 'requesting'};
+    const state: ProductSearchStateModel = {
+      ...ctx.getState(),
+      searchValue: action.searchValue,
+      status: 'requesting',
+    };
+    ctx.setState(state);
     const searchMap = this.createSearchObservables(state);
     forkJoin(Object.keys(searchMap).map(marketplaceName => searchMap[marketplaceName].pipe(
       tap(rows => {
@@ -58,7 +68,7 @@ export class ProductSearchState {
           ctx.setState(state);
         }
       })
-    ))).subscribe(() => {
+    ))).subscribe(rows => {
       this.paginationCombiner = this.createPaginationCombiner(this.store, state.searchValue);
       this.loadPaginationCombiner(ctx);
     });
@@ -77,24 +87,36 @@ export class ProductSearchState {
 
   @Action(SearchUpdateFilterMarketPlace)
   updateFilterMarketPlace(ctx: StateContext<ProductSearchStateModel>, action: SearchUpdateFilterMarketPlace) {
-    const state = ctx.getState();
+    let state = ctx.getState();
     const filter: ProductSearchFilter = { ...state.filter, marketplaces: action.records };
-    ctx.setState({
+    this.paginationCombiner = this.createPaginationCombiner(this.store, state.searchValue);
+    state = {
       ...state,
+      status: 'receiving',
+      searchValue: { ...state.searchValue, pageNumber: 0},
       filter,
-      showedResults: this.filterResults(filter, state.results)
-    });
+      showedResults: [],
+      results: [],
+    };
+    ctx.setState(state);
+    this.loadPaginationCombiner(ctx);
   }
 
   @Action(SearchNextPage)
   nextPage(ctx: StateContext<ProductSearchStateModel>) {
     const state = ctx.getState();
     state.searchValue.pageNumber++;
+    state.status = 'requesting';
+    ctx.setState(state);
+    if (Object.values(state.resultMap).every(maps => maps[state.searchValue.pageNumber])) {
+      return this.loadPaginationCombiner(ctx);
+    }
     const searchMap = this.createSearchObservables(state);
     forkJoin(Object.keys(searchMap).map(marketplaceName => searchMap[marketplaceName].pipe(
       tap(rows => {
         if (!!rows[0]) {
           state.resultMap[rows[0].origin][state.searchValue.pageNumber] = rows;
+          state.status = 'receiving';
           ctx.setState(state);
         }
       })
@@ -136,27 +158,18 @@ export class ProductSearchState {
     return rows.filter(row => filter.marketplaces[row.origin]);
   }
 
-  sortResults(sortBy: SortBy, rows: ProductSearchResultModel[]): ProductSearchResultModel[] {
-    switch (sortBy) {
-      case SortBy.priceAsc:
-        return rows.sort((a, b) => a.price - b.price);
-      case SortBy.priceDesc:
-        return rows.sort((a, b) => b.price - a.price);
-      case SortBy.rating:
-            return rows.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-      default:
-        return rows;
-    }
-  }
-
   createPaginationCombiner(store: Store, params: ProductSearchParamsModel) {
     const currentState = store.selectSnapshot((state: AppState) => state.productSearch);
     const sorting = this.sortingMap[params.sortBy];
     const getters = Object.keys(currentState.resultMap).map(marketplaceName => {
-      return (page: number) => store.selectSnapshot((state: AppState) => state.productSearch).resultMap[marketplaceName][page];
+      return (page: number) => {
+        const callbackState = store.selectSnapshot((state: AppState) => state.productSearch);
+        return callbackState.filter.marketplaces[marketplaceName] ? callbackState.resultMap[marketplaceName][page] : [];
+      };
     });
     return combinePagination({
       getters,
+      sort: false, // not use manual sorting
       sortKey: sorting.sortKey,
       sortDirection: sorting.sortDirection
     });
@@ -167,10 +180,16 @@ export class ProductSearchState {
     this.paginationCombiner.getNext().then((rows: ProductSearchResultModel[]) => {
       const state = ctx.getState();
       const results = state.results.concat(rows);
+      state.status = rows.length === 0
+        ? 'no-result'
+        : Object.values(state.resultMap).every(
+            marketResult => marketResult[state.searchValue.pageNumber].length < state.searchValue.perPage
+          )
+            ? 'end-of-result' : 'normal';
       ctx.patchState({
         results,
         showedResults: this.filterResults(state.filter, results),
-        status: (rows.length > 0) ? 'normal' : 'end-of-result',
+        status: state.status,
       });
     });
   }
